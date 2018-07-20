@@ -7,6 +7,6 @@ type User struct {
 	FirstName string `json:"first_name"  sql:"first_name"`
 }
 
-type IUserService interface {
+type UserService interface {
 	User(id int) (*User, error)
 }

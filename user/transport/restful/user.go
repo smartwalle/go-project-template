@@ -1,13 +1,13 @@
 package restful
 
 import (
-	"go-projet-template/user"
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/conv4go"
+	"go-projet-template/user"
 )
 
 type Handler struct {
-	UserService user.IUserService
+	UserService user.UserService
 }
 
 func (this *Handler) Run(r gin.IRouter) {

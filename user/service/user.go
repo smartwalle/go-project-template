@@ -1,23 +1,23 @@
 package service
 
 import (
-	"titan/app/msg"
 	"go-projet-template/user"
+	"titan/app/msg"
 )
 
-type IUserRepository interface {
+type UserRepository interface {
 	User(id int) (*user.User, error)
 }
 
-type UserService struct {
-	Repo IUserRepository
+type userService struct {
+	Repo UserRepository
 }
 
-func NewUserService(repo IUserRepository) user.IUserService {
-	return &UserService{Repo: repo}
+func NewUserService(repo UserRepository) user.UserService {
+	return &userService{Repo: repo}
 }
 
-func (this *UserService) User(id int) (result *user.User, err error) {
+func (this *userService) User(id int) (result *user.User, err error) {
 	result, err = this.Repo.User(id)
 	if err != nil {
 		return nil, err
