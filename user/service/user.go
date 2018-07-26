@@ -2,7 +2,11 @@ package service
 
 import (
 	"go-projet-template/user"
-	"titan/app/msg"
+	"github.com/smartwalle/errors"
+)
+
+var (
+	UserNotExist = errors.New("200000", "用户信息不存在")
 )
 
 type UserRepository interface {
@@ -23,7 +27,7 @@ func (this *userService) User(id int) (result *user.User, err error) {
 		return nil, err
 	}
 	if result == nil {
-		return nil, msg.UserNotExist.Location()
+		return nil, UserNotExist
 	}
 	return result, err
 }
