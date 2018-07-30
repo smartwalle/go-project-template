@@ -6,15 +6,21 @@ import (
 	"go-projet-template/user"
 )
 
-type Handler struct {
+type UserHandler struct {
 	UserService user.UserService
 }
 
-func (this *Handler) Run(r gin.IRouter) {
+func NewUserHandler(uServ user.UserService) *UserHandler {
+	var h = &UserHandler{}
+	h.UserService = uServ
+	return h
+}
+
+func (this *UserHandler) Run(r gin.IRouter) {
 	r.GET("/user", this.GetUser)
 }
 
-func (this *Handler) GetUser(c *gin.Context) {
+func (this *UserHandler) GetUser(c *gin.Context) {
 	var user, err = this.UserService.User(conv4go.Int(c.Request.FormValue("id")))
 	if err != nil {
 		c.JSON(200, err)

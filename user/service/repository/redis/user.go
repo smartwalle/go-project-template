@@ -8,12 +8,15 @@ import (
 )
 
 type userRepository struct {
+	service.UserRepository
 	rPool *dbr.Pool
-	repo  service.UserRepository
 }
 
 func NewUserRepository(rPool *dbr.Pool, repo service.UserRepository) service.UserRepository {
-	return &userRepository{rPool: rPool, repo: repo}
+	var r = &userRepository{}
+	r.rPool = rPool
+	r.UserRepository = repo
+	return r
 }
 
 func (this *userRepository) User(id int) (result *user.User, err error) {
@@ -21,9 +24,8 @@ func (this *userRepository) User(id int) (result *user.User, err error) {
 	defer rSess.Close()
 
 	var key = fmt.Sprintf("user_%d", id)
-
 	if err = rSess.GET(key).UnmarshalJSON(&result); err != nil || result == nil {
-		result, err = this.repo.User(id)
+		result, err = this.UserRepository.User(id)
 		if err != nil {
 			return nil, err
 		}

@@ -15,12 +15,11 @@ func main() {
 	var db, _ = dbs.NewSQL("mysql", "root:yangfeng@tcp(192.168.1.99:3306)/v3?parseTime=true", 30, 5)
 	var rPool = dbr.NewRedis("192.168.1.99:6379", "", 10, 10, 5)
 
-	var us = service.NewUserService(redis.NewUserRepository(rPool, mysql.NewUserRepository(db)))
-
-	var h = &restful.Handler{}
-	h.UserService = us
+	var uRepo = redis.NewUserRepository(rPool, mysql.NewUserRepository(db))
+	var uServ = service.NewUserService(uRepo)
+	var uHandler = restful.NewUserHandler(uServ)
 
 	var s = gin.Default()
-	h.Run(s)
+	uHandler.Run(s)
 	s.Run(":8888")
 }

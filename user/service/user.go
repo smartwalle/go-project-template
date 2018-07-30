@@ -1,8 +1,8 @@
 package service
 
 import (
-	"go-projet-template/user"
 	"github.com/smartwalle/errors"
+	"go-projet-template/user"
 )
 
 var (
@@ -14,15 +14,15 @@ type UserRepository interface {
 }
 
 type userService struct {
-	Repo UserRepository
+	repo UserRepository
 }
 
 func NewUserService(repo UserRepository) user.UserService {
-	return &userService{Repo: repo}
+	return &userService{repo: repo}
 }
 
 func (this *userService) User(id int) (result *user.User, err error) {
-	result, err = this.Repo.User(id)
+	result, err = this.repo.User(id)
 	if err != nil {
 		return nil, err
 	}
