@@ -3,7 +3,7 @@ package restful
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/conv4go"
-	"go-projet-template/user"
+	"go-project-template/user"
 )
 
 type UserHandler struct {

@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/smartwalle/errors"
-	"go-projet-template/user"
+	"go-project-template/user"
 )
 
 var (

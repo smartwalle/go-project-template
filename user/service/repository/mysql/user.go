@@ -2,8 +2,8 @@ package mysql
 
 import (
 	"github.com/smartwalle/dbs"
-	"go-projet-template/user"
-	"go-projet-template/user/service"
+	"go-project-template/user"
+	"go-project-template/user/service"
 )
 
 const (
