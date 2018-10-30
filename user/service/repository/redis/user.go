@@ -19,13 +19,13 @@ func NewUserRepository(rPool *dbr.Pool, repo service.UserRepository) service.Use
 	return r
 }
 
-func (this *userRepository) User(id int) (result *user.User, err error) {
+func (this *userRepository) GetUserWithId(id int) (result *user.User, err error) {
 	var rSess = this.rPool.GetSession()
 	defer rSess.Close()
 
 	var key = fmt.Sprintf("user_%d", id)
 	if err = rSess.GET(key).UnmarshalJSON(&result); err != nil || result == nil {
-		result, err = this.UserRepository.User(id)
+		result, err = this.UserRepository.GetUserWithId(id)
 		if err != nil {
 			return nil, err
 		}
