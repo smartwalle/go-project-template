@@ -1,27 +1,29 @@
 package service
 
 import (
+	"context"
 	"go-project-template/user"
+	"go-project-template/user/model"
 )
 
 type UserRepository interface {
-	GetUserWithId(id int) (result *user.User, err error)
+	GetUserWithId(ctx context.Context, id int) (result *model.User, err error)
 
-	GetUserWithUsername(username string) (result *user.User, err error)
+	GetUserWithUsername(ctx context.Context, username string) (result *model.User, err error)
 
-	AddUser(user *user.AddUserParam) (result *user.User, err error)
+	AddUser(ctx context.Context, user *model.AddUserParam) (result *model.User, err error)
 }
 
-type userService struct {
+type UserService struct {
 	repo UserRepository
 }
 
-func NewUserService(repo UserRepository) user.UserService {
-	return &userService{repo: repo}
+func NewUserService(repo UserRepository) *UserService {
+	return &UserService{repo: repo}
 }
 
-func (this *userService) GetUserWithId(id int) (result *user.User, err error) {
-	result, err = this.repo.GetUserWithId(id)
+func (this *UserService) GetUserWithId(ctx context.Context, id int) (result *model.User, err error) {
+	result, err = this.repo.GetUserWithId(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -31,11 +33,11 @@ func (this *userService) GetUserWithId(id int) (result *user.User, err error) {
 	return result, err
 }
 
-func (this *userService) AddUser(param *user.AddUserParam) (result *user.User, err error) {
+func (this *UserService) AddUser(ctx context.Context, param *model.AddUserParam) (result *model.User, err error) {
 	if param.Username == "" {
 		return nil, user.UsernameExists
 	}
-	eUser, err := this.repo.GetUserWithUsername(param.Username)
+	eUser, err := this.repo.GetUserWithUsername(ctx, param.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -44,5 +46,5 @@ func (this *userService) AddUser(param *user.AddUserParam) (result *user.User, e
 		return nil, user.UsernameExists
 	}
 
-	return this.repo.AddUser(param)
+	return this.repo.AddUser(ctx, param)
 }

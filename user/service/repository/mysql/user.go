@@ -1,8 +1,9 @@
 package mysql
 
 import (
+	"context"
 	"github.com/smartwalle/dbs"
-	"go-project-template/user"
+	"go-project-template/user/model"
 	"go-project-template/user/service"
 )
 
@@ -18,7 +19,7 @@ func NewUserRepository(db dbs.DB) service.UserRepository {
 	return &userRepository{db: db}
 }
 
-func (this *userRepository) GetUserWithId(id int) (result *user.User, err error) {
+func (this *userRepository) GetUserWithId(ctx context.Context, id int) (result *model.User, err error) {
 	var sb = dbs.NewSelectBuilder()
 	sb.Selects("u.id", "u.username", "u.last_name", "u.first_name")
 	sb.From(k_DB_USER, "AS u")
@@ -29,7 +30,7 @@ func (this *userRepository) GetUserWithId(id int) (result *user.User, err error)
 	return result, err
 }
 
-func (this *userRepository) GetUserWithUsername(username string) (result *user.User, err error) {
+func (this *userRepository) GetUserWithUsername(ctx context.Context, username string) (result *model.User, err error) {
 	var sb = dbs.NewSelectBuilder()
 	sb.Selects("u.id", "u.username", "u.last_name", "u.first_name")
 	sb.From(k_DB_USER, "AS u")
@@ -40,7 +41,7 @@ func (this *userRepository) GetUserWithUsername(username string) (result *user.U
 	return result, err
 }
 
-func (this *userRepository) AddUser(user *user.AddUserParam) (result *user.User, err error) {
+func (this *userRepository) AddUser(ctx context.Context, user *model.AddUserParam) (result *model.User, err error) {
 	var tx = dbs.MustTx(this.db)
 
 	var ib = dbs.NewInsertBuilder()
