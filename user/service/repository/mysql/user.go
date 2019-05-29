@@ -19,7 +19,7 @@ func NewUserRepository(db dbs.DB) service.UserRepository {
 	return &userRepository{db: db}
 }
 
-func (this *userRepository) GetUserWithId(ctx context.Context, id int) (result *model.User, err error) {
+func (this *userRepository) GetUserWithId(ctx context.Context, id int64) (result *model.User, err error) {
 	var sb = dbs.NewSelectBuilder()
 	sb.Selects("u.id", "u.username", "u.last_name", "u.first_name")
 	sb.From(k_DB_USER, "AS u")

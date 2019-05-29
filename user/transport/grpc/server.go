@@ -1,24 +1,38 @@
 package grpc
 
 import (
-	"go-project-template/user/service"
+	"google.golang.org/grpc"
+	"net"
 )
 
 type Server struct {
-	userServ *service.UserService
+	server *grpc.Server
 }
 
-func NewServer(userServ *service.UserService) *Server {
+type Handler interface {
+	Handle(r *grpc.Server)
+}
+
+func NewServer() *Server {
 	var s = &Server{}
-	s.userServ = userServ
+	s.server = grpc.NewServer()
 	return s
 }
 
 func (this *Server) Run() error {
 	go func() {
-		//if err := s.Run(":8888"); err != nil {
-		//	panic(err)
-		//}
+		listener, err := net.Listen("tcp", ":8889")
+		if err != nil {
+			panic(err)
+		}
+
+		if err := this.server.Serve(listener); err != nil {
+			panic(err)
+		}
 	}()
 	return nil
+}
+
+func (this *Server) AddHandler(h Handler) {
+	h.Handle(this.server)
 }

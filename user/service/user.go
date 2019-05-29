@@ -7,7 +7,7 @@ import (
 )
 
 type UserRepository interface {
-	GetUserWithId(ctx context.Context, id int) (result *model.User, err error)
+	GetUserWithId(ctx context.Context, id int64) (result *model.User, err error)
 
 	GetUserWithUsername(ctx context.Context, username string) (result *model.User, err error)
 
@@ -22,7 +22,7 @@ func NewUserService(repo UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (this *UserService) GetUserWithId(ctx context.Context, id int) (result *model.User, err error) {
+func (this *UserService) GetUserWithId(ctx context.Context, id int64) (result *model.User, err error) {
 	result, err = this.repo.GetUserWithId(ctx, id)
 	if err != nil {
 		return nil, err

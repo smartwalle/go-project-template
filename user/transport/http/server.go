@@ -2,25 +2,25 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-project-template/user/service"
 )
 
 type Server struct {
-	userServ *service.UserService
+	engine *gin.Engine
 }
 
-func NewServer(userServ *service.UserService) *Server {
+type Handler interface {
+	Handle(r gin.IRouter)
+}
+
+func NewServer() *Server {
 	var s = &Server{}
-	s.userServ = userServ
+	s.engine = gin.Default()
 	return s
 }
 
 func (this *Server) Run() error {
-	var s = gin.Default()
-	this.route(s)
-
 	go func() {
-		if err := s.Run(":8888"); err != nil {
+		if err := this.engine.Run(":8888"); err != nil {
 			panic(err)
 		}
 	}()
@@ -28,8 +28,6 @@ func (this *Server) Run() error {
 	return nil
 }
 
-func (this *Server) route(r gin.IRouter) {
-	r.GET("/user", this.GetUser)
-
-	r.POST("/user", this.AddUser)
+func (this *Server) AddHandler(h Handler) {
+	h.Handle(this.engine)
 }

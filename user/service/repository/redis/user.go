@@ -20,7 +20,7 @@ func NewUserRepository(rPool *dbr.Pool, repo service.UserRepository) service.Use
 	return r
 }
 
-func (this *userRepository) GetUserWithId(ctx context.Context, id int) (result *model.User, err error) {
+func (this *userRepository) GetUserWithId(ctx context.Context, id int64) (result *model.User, err error) {
 	var rSess = this.rPool.GetSession()
 	defer rSess.Close()
 
