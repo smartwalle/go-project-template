@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/smartwalle/dbr"
+	"github.com/smartwalle/dbs"
 	"go-project-template/user/model"
 	"go-project-template/user/service"
 )
@@ -18,6 +19,19 @@ func NewUserRepository(rPool *dbr.Pool, repo service.UserRepository) service.Use
 	r.rPool = rPool
 	r.UserRepository = repo
 	return r
+}
+
+func (this *userRepository) BeginTx() (dbs.TX, service.UserRepository) {
+	var repo = *this
+	var tx dbs.TX
+	tx, repo.UserRepository = this.UserRepository.BeginTx()
+	return tx, &repo
+}
+
+func (this *userRepository) WithTx(tx dbs.TX) service.UserRepository {
+	var repo = *this
+	repo.UserRepository = this.UserRepository.WithTx(tx)
+	return &repo
 }
 
 func (this *userRepository) GetUserWithId(ctx context.Context, id int64) (result *model.User, err error) {

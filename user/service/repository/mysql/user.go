@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	k_DB_USER = "user_user"
+	kTblUser = "users"
 )
 
 type userRepository struct {
@@ -19,10 +19,23 @@ func NewUserRepository(db dbs.DB) service.UserRepository {
 	return &userRepository{db: db}
 }
 
+func (this *userRepository) BeginTx() (dbs.TX, service.UserRepository) {
+	var tx = dbs.MustTx(this.db)
+	var repo = *this
+	repo.db = tx
+	return tx, &repo
+}
+
+func (this *userRepository) WithTx(tx dbs.TX) service.UserRepository {
+	var repo = *this
+	repo.db = tx
+	return &repo
+}
+
 func (this *userRepository) GetUserWithId(ctx context.Context, id int64) (result *model.User, err error) {
 	var sb = dbs.NewSelectBuilder()
 	sb.Selects("u.id", "u.username", "u.last_name", "u.first_name")
-	sb.From(k_DB_USER, "AS u")
+	sb.From(kTblUser, "AS u")
 	sb.Where("u.id = ?", id)
 	if err = sb.Scan(this.db, &result); err != nil {
 		return nil, err
@@ -33,7 +46,7 @@ func (this *userRepository) GetUserWithId(ctx context.Context, id int64) (result
 func (this *userRepository) GetUserWithUsername(ctx context.Context, username string) (result *model.User, err error) {
 	var sb = dbs.NewSelectBuilder()
 	sb.Selects("u.id", "u.username", "u.last_name", "u.first_name")
-	sb.From(k_DB_USER, "AS u")
+	sb.From(kTblUser, "AS u")
 	sb.Where("u.username = ?", username)
 	if err = sb.Scan(this.db, &result); err != nil {
 		return nil, err
@@ -41,33 +54,20 @@ func (this *userRepository) GetUserWithUsername(ctx context.Context, username st
 	return result, err
 }
 
-func (this *userRepository) AddUser(ctx context.Context, user *model.AddUserParam) (result *model.User, err error) {
-	var tx = dbs.MustTx(this.db)
-
+func (this *userRepository) AddUser(ctx context.Context, user *model.AddUserParam) (result int64, err error) {
 	var ib = dbs.NewInsertBuilder()
-	ib.Table(k_DB_USER)
+	ib.Table(kTblUser)
 	ib.Columns("username", "last_name", "first_name")
 	ib.Values(user.Username, user.LastName, user.FirstName)
-	sResult, err := ib.Exec(tx)
+	sResult, err := ib.Exec(this.db)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	nId, err := sResult.LastInsertId()
 	if err != nil {
-		tx.Rollback()
-		return nil, err
+		return 0, err
 	}
 
-	var sb = dbs.NewSelectBuilder()
-	sb.Selects("u.id", "u.username", "u.last_name", "u.first_name")
-	sb.From(k_DB_USER, "AS u")
-	sb.Where("u.id = ?", nId)
-	if err = sb.Scan(tx, &result); err != nil {
-		return nil, err
-	}
-
-	tx.Commit()
-
-	return result, err
+	return nId, err
 }
