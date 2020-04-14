@@ -1,10 +1,8 @@
 package service
 
 import (
-	"context"
 	"github.com/smartwalle/dbs"
 	"go-project-template/user"
-	"go-project-template/user/model"
 )
 
 type UserRepository interface {
@@ -12,11 +10,11 @@ type UserRepository interface {
 
 	WithTx(tx dbs.TX) UserRepository
 
-	GetUserWithId(ctx context.Context, id int64) (result *model.User, err error)
+	GetUserWithId(id int64) (result *user.User, err error)
 
-	GetUserWithUsername(ctx context.Context, username string) (result *model.User, err error)
+	GetUserWithUsername(username string) (result *user.User, err error)
 
-	AddUser(ctx context.Context, user *model.AddUserParam) (result int64, err error)
+	AddUser(user *user.AddUserParam) (result int64, err error)
 }
 
 type UserService struct {
@@ -27,8 +25,8 @@ func NewUserService(repo UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (this *UserService) GetUserWithId(ctx context.Context, id int64) (result *model.User, err error) {
-	result, err = this.repo.GetUserWithId(ctx, id)
+func (this *UserService) GetUserWithId(id int64) (result *user.User, err error) {
+	result, err = this.repo.GetUserWithId(id)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +36,7 @@ func (this *UserService) GetUserWithId(ctx context.Context, id int64) (result *m
 	return result, err
 }
 
-func (this *UserService) AddUser(ctx context.Context, param *model.AddUserParam) (result *model.User, err error) {
+func (this *UserService) AddUser(param *user.AddUserParam) (result *user.User, err error) {
 	if param.Username == "" {
 		return nil, user.UsernameExists
 	}
@@ -50,7 +48,7 @@ func (this *UserService) AddUser(ctx context.Context, param *model.AddUserParam)
 		}
 	}()
 
-	eUser, err := nUserRepo.GetUserWithUsername(ctx, param.Username)
+	eUser, err := nUserRepo.GetUserWithUsername(param.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -60,12 +58,12 @@ func (this *UserService) AddUser(ctx context.Context, param *model.AddUserParam)
 		return nil, user.UsernameExists
 	}
 
-	userId, err := nUserRepo.AddUser(ctx, param)
+	userId, err := nUserRepo.AddUser(param)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err = nUserRepo.GetUserWithId(ctx, userId)
+	result, err = nUserRepo.GetUserWithId(userId)
 	if err != nil {
 		return nil, err
 	}

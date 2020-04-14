@@ -22,7 +22,7 @@ func (this *UserHandler) Handle(s micro.Service) {
 }
 
 func (this *UserHandler) GetUserWithId(ctx context.Context, req *user_api.GetUserReq, rsp *user_api.GetUserRsp) error {
-	result, err := this.userService.GetUserWithId(ctx, req.Id)
+	result, err := this.userService.GetUserWithId(req.Id)
 	if err != nil {
 		return err
 	}

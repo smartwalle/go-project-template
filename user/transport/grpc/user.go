@@ -22,7 +22,7 @@ func (this *UserHandler) Handle(s *grpc.Server) {
 }
 
 func (this *UserHandler) GetUserWithId(ctx context.Context, req *user_api.GetUserReq) (*user_api.GetUserRsp, error) {
-	result, err := this.userService.GetUserWithId(ctx, req.Id)
+	result, err := this.userService.GetUserWithId(req.Id)
 	if err != nil {
 		return nil, err
 	}

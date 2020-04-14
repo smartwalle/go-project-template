@@ -3,7 +3,7 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/conv4go"
-	"go-project-template/user/model"
+	"go-project-template/user"
 	"go-project-template/user/service"
 )
 
@@ -24,7 +24,7 @@ func (this *UserHandler) Handle(r gin.IRouter) {
 }
 
 func (this *UserHandler) GetUser(c *gin.Context) {
-	result, err := this.userService.GetUserWithId(c, conv4go.Int64(c.Request.FormValue("id")))
+	result, err := this.userService.GetUserWithId(conv4go.Int64(c.Request.FormValue("id")))
 	if err != nil {
 		c.JSON(200, err)
 		return
@@ -33,12 +33,12 @@ func (this *UserHandler) GetUser(c *gin.Context) {
 }
 
 func (this *UserHandler) AddUser(c *gin.Context) {
-	var param = &model.AddUserParam{}
+	var param = &user.AddUserParam{}
 	param.Username = c.Request.FormValue("username")
 	param.FirstName = c.Request.FormValue("first_name")
 	param.LastName = c.Request.FormValue("last_name")
 
-	result, err := this.userService.AddUser(c, param)
+	result, err := this.userService.AddUser(param)
 	if err != nil {
 		c.JSON(200, err)
 		return
