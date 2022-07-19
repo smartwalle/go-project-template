@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   http.AddUserReq:
     properties:
@@ -10,6 +9,17 @@ definitions:
         type: string
       username:
         description: 用户名
+        type: string
+    type: object
+  http.Response:
+    properties:
+      code:
+        description: 错误码
+        type: integer
+      data:
+        description: 数据
+      message:
+        description: 错误消息
         type: string
     type: object
   http.UserRsp:
@@ -27,14 +37,8 @@ definitions:
         description: 用户名
         type: string
     type: object
-host: localhost:8888
 info:
-  contact:
-    name: Swagger Doc
-    url: https://github.com/swaggo/swag/blob/master/README_zh-CN.md
-  description: This is a sample http server.
-  title: Go Project Template
-  version: "1.0"
+  contact: {}
 paths:
   /profile:
     get:
@@ -47,7 +51,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/http.UserRsp'
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/http.UserRsp'
+              type: object
       security:
       - ApiKeyAuth: []
       summary: 获取当前登录用户信息
@@ -70,7 +79,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/http.UserRsp'
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/http.UserRsp'
+              type: object
       summary: 获取指定用户信息
       tags:
       - user
@@ -91,15 +105,13 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/http.UserRsp'
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/http.UserRsp'
+              type: object
       summary: 添加用户信息
       tags:
       - user
-schemes:
-- http
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"

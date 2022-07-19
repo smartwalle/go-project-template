@@ -5,7 +5,7 @@ import (
 	"github.com/smartwalle/errors"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
-	_ "go-project-template/user/docs"
+	_ "go-project-template/user/swagger"
 	"net/http"
 )
 
@@ -15,6 +15,13 @@ var (
 	ErrUnauthorized     = errors.New(100002, "未登录")
 	ErrPermissionDenied = errors.New(100003, "没有操作权限")
 )
+
+// Response 仅用作生成 Swagger 文档使用
+type Response struct {
+	Code    int32       `json:"code"`              // 错误码
+	Message string      `json:"message,omitempty"` // 错误消息
+	Data    interface{} `json:"data,omitempty"`    // 数据
+}
 
 type Server struct {
 	engine *gin.Engine

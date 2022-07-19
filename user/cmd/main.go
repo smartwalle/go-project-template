@@ -15,6 +15,7 @@ import (
 	"syscall"
 )
 
+//  swag init --parseDependency --parseInternal -o ../swagger
 func main() {
 
 	// 初始化数据库日志

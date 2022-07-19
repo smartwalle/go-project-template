@@ -33,7 +33,7 @@ func (this *UserHandler) Handle(r gin.IRouter) {
 // @Tags user
 // @Accept json
 // @Produce json
-// @Success 200 {object} UserRsp
+// @Success 200 {object} Response{data=UserRsp}
 // @Security ApiKeyAuth
 // @Router /profile [get]
 func (this *UserHandler) Profile(c *gin.Context) (interface{}, error) {
@@ -54,7 +54,7 @@ func (this *UserHandler) Profile(c *gin.Context) (interface{}, error) {
 // @Accept json
 // @Produce json
 // @Param id query int true "用户 id"
-// @Success 200 {object} UserRsp
+// @Success 200 {object} Response{data=UserRsp}
 // @Router /user [get]
 func (this *UserHandler) GetUser(c *gin.Context) (interface{}, error) {
 	var id = conv4go.Int64(c.Request.FormValue("id"))
@@ -86,7 +86,7 @@ func (this *UserHandler) GetUser(c *gin.Context) (interface{}, error) {
 // @Accept json
 // @Produce json
 // @Param object body AddUserReq true "用户信息"
-// @Success 200 {object} UserRsp
+// @Success 200 {object} Response{data=UserRsp}
 // @Router /user [post]
 func (this *UserHandler) AddUser(c *gin.Context) (interface{}, error) {
 	var param *AddUserReq
