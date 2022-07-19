@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  user.AddUserParam:
+  http.AddUserReq:
     properties:
       firstName:
         description: 名
@@ -12,7 +12,7 @@ definitions:
         description: 用户名
         type: string
     type: object
-  user.User:
+  http.UserRsp:
     properties:
       first_name:
         description: 名
@@ -47,7 +47,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.User'
+            $ref: '#/definitions/http.UserRsp'
       security:
       - ApiKeyAuth: []
       summary: 获取当前登录用户信息
@@ -70,7 +70,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.User'
+            $ref: '#/definitions/http.UserRsp'
       summary: 获取指定用户信息
       tags:
       - user
@@ -84,14 +84,14 @@ paths:
         name: object
         required: true
         schema:
-          $ref: '#/definitions/user.AddUserParam'
+          $ref: '#/definitions/http.AddUserReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.User'
+            $ref: '#/definitions/http.UserRsp'
       summary: 添加用户信息
       tags:
       - user

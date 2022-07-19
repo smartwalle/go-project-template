@@ -10,14 +10,14 @@ var (
 )
 
 type User struct {
-	Id        int64  `json:"id"          sql:"id"`         // id
-	Username  string `json:"username"    sql:"username"`   // 用户名
-	LastName  string `json:"last_name"   sql:"last_name"`  // 姓
-	FirstName string `json:"first_name"  sql:"first_name"` // 名
+	Id        int64  `sql:"id"`         // id
+	Username  string `sql:"username"`   // 用户名
+	LastName  string `sql:"last_name"`  // 姓
+	FirstName string `sql:"first_name"` // 名
 }
 
 type AddUserParam struct {
-	Username  string `form:"username"`   // 用户名
-	LastName  string `form:"last_name"`  // 姓
-	FirstName string `form:"first_name"` // 名
+	Username  string // 用户名
+	LastName  string // 姓
+	FirstName string // 名
 }

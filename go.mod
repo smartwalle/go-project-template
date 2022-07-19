@@ -14,7 +14,7 @@ require (
 	github.com/smartwalle/conv4go v1.0.1
 	github.com/smartwalle/dbr v1.1.3
 	github.com/smartwalle/dbs v1.1.7
-	github.com/smartwalle/errors v1.0.0
+	github.com/smartwalle/errors v1.0.3
 	github.com/smartwalle/log4go v1.0.3
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.1

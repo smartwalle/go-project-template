@@ -34,7 +34,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.User"
+                            "$ref": "#/definitions/http.UserRsp"
                         }
                     }
                 }
@@ -66,7 +66,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.User"
+                            "$ref": "#/definitions/http.UserRsp"
                         }
                     }
                 }
@@ -90,7 +90,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.AddUserParam"
+                            "$ref": "#/definitions/http.AddUserReq"
                         }
                     }
                 ],
@@ -98,7 +98,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.User"
+                            "$ref": "#/definitions/http.UserRsp"
                         }
                     }
                 }
@@ -106,7 +106,7 @@
         }
     },
     "definitions": {
-        "user.AddUserParam": {
+        "http.AddUserReq": {
             "type": "object",
             "properties": {
                 "firstName": {
@@ -123,7 +123,7 @@
                 }
             }
         },
-        "user.User": {
+        "http.UserRsp": {
             "type": "object",
             "properties": {
                 "first_name": {

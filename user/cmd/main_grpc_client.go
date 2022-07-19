@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	user_api "go-project-template/user/api/grpc"
+	userGrpc "go-project-template/user/api/grpc"
 	"google.golang.org/grpc"
 )
 
@@ -14,6 +14,6 @@ func main() {
 		return
 	}
 
-	cc := user_api.NewUserClient(conn)
-	fmt.Println(cc.GetUserWithId(context.Background(), &user_api.GetUserReq{Id: 1}))
+	cc := userGrpc.NewUserClient(conn)
+	fmt.Println(cc.GetUserWithId(context.Background(), &userGrpc.GetUserReq{Id: 1}))
 }

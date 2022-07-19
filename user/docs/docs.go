@@ -41,7 +41,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.User"
+                            "$ref": "#/definitions/http.UserRsp"
                         }
                     }
                 }
@@ -73,7 +73,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.User"
+                            "$ref": "#/definitions/http.UserRsp"
                         }
                     }
                 }
@@ -97,7 +97,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.AddUserParam"
+                            "$ref": "#/definitions/http.AddUserReq"
                         }
                     }
                 ],
@@ -105,7 +105,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.User"
+                            "$ref": "#/definitions/http.UserRsp"
                         }
                     }
                 }
@@ -113,7 +113,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "user.AddUserParam": {
+        "http.AddUserReq": {
             "type": "object",
             "properties": {
                 "firstName": {
@@ -130,7 +130,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.User": {
+        "http.UserRsp": {
             "type": "object",
             "properties": {
                 "first_name": {
