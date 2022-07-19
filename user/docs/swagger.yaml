@@ -95,6 +95,8 @@ paths:
       summary: 添加用户信息
       tags:
       - user
+schemes:
+- http
 securityDefinitions:
   ApiKeyAuth:
     in: header

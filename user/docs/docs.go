@@ -166,7 +166,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8888",
 	BasePath:         "/",
-	Schemes:          []string{},
+	Schemes:          []string{"http"},
 	Title:            "Go Project Template",
 	Description:      "This is a sample http server.",
 	InfoInstanceName: "swagger",

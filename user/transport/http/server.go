@@ -31,6 +31,7 @@ type Handler interface {
 // @contact.name   Swagger Doc
 // @contact.url    https://github.com/swaggo/swag/blob/master/README_zh-CN.md
 
+// @schemes   http
 // @host      localhost:8888
 // @BasePath  /
 
