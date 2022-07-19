@@ -8,6 +8,7 @@ import (
 )
 
 type UserHandler struct {
+	user_api.UnimplementedUserServer
 	userService *service.UserService
 }
 

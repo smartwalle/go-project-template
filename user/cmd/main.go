@@ -10,7 +10,6 @@ import (
 	"go-project-template/user/service/repository/redis"
 	"go-project-template/user/transport/grpc"
 	"go-project-template/user/transport/http"
-	"go-project-template/user/transport/micro"
 	"os"
 	"os/signal"
 	"syscall"
@@ -36,10 +35,6 @@ func main() {
 	var gServer = grpc.NewServer()
 	gServer.AddHandler(grpc.NewUserHandler(userService))
 	gServer.Run()
-
-	var mServer = micro.NewServer()
-	mServer.AddHandler(micro.NewUserHandler(userService))
-	mServer.Run()
 
 	var c = make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)

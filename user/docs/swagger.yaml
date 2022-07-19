@@ -1,0 +1,103 @@
+basePath: /
+definitions:
+  user.AddUserParam:
+    properties:
+      firstName:
+        description: 名
+        type: string
+      lastName:
+        description: 姓
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+  user.User:
+    properties:
+      first_name:
+        description: 名
+        type: string
+      id:
+        description: id
+        type: integer
+      last_name:
+        description: 姓
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+host: localhost:8888
+info:
+  contact:
+    name: Swagger Doc
+    url: https://github.com/swaggo/swag/blob/master/README_zh-CN.md
+  description: This is a sample http server.
+  title: Go Project Template
+  version: "1.0"
+paths:
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前登录用户信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取当前登录用户信息
+      tags:
+      - user
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定用户信息
+      parameters:
+      - description: 用户 id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+      summary: 获取指定用户信息
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: 添加用户信息
+      parameters:
+      - description: 用户信息
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/user.AddUserParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+      summary: 添加用户信息
+      tags:
+      - user
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
