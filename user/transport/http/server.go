@@ -1,12 +1,18 @@
 package http
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/errors"
+	"github.com/smartwalle/http4go"
+	"github.com/smartwalle/log4go"
+	"github.com/smartwalle/xid"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 	_ "go-project-template/user/swagger"
+	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 var (
@@ -47,10 +53,17 @@ type Handler interface {
 // @name                        Authorization
 
 func NewServer() *Server {
+	var nLogger = log4go.New()
+	nLogger.DisablePath()
+	nLogger.SetPrefix("[HTTP] ")
+	nLogger.AddWriter("file", log4go.NewFileWriter(log4go.LevelTrace, log4go.WithLogDir("./logs_http"), log4go.WithMaxAge(60*60*24*30)))
+
 	var s = &Server{}
 	s.engine = gin.Default()
 
+	s.engine.Use(MidRequestTag())
 	s.engine.Use(MidCORS())
+	s.engine.Use(MidLogger(nLogger))
 
 	s.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -87,6 +100,56 @@ func MidCORS() gin.HandlerFunc {
 			return
 		}
 		c.Next()
+	}
+}
+
+const (
+	kRequestTag = "Request-Tag"
+)
+
+func MidRequestTag() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var rid = xid.NewMID().Hex()
+		c.Request.Header.Set(kRequestTag, rid)
+		c.Writer.Header().Add(kRequestTag, rid)
+	}
+}
+
+func GetRequestTag(c *gin.Context) string {
+	return c.Request.Header.Get(kRequestTag)
+}
+
+func MidLogger(logger log4go.Logger) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Request.ParseForm()
+
+		if logger != nil {
+			var w = &strings.Builder{}
+			w.WriteString(fmt.Sprintf("%s - %s \n", c.Request.Method, c.Request.URL.Path))
+			w.WriteString(fmt.Sprintf("Header: \n"))
+			for key, value := range c.Request.Header {
+				w.WriteString(fmt.Sprintf("- %v: %v \n", key, value))
+			}
+
+			if len(c.Request.Form) > 0 {
+				w.WriteString(fmt.Sprintf("Form: \n"))
+				for key, value := range c.Request.Form {
+					w.WriteString(fmt.Sprintf("- %v: %v \n", key, value))
+				}
+			}
+
+			if c.ContentType() == "application/json" {
+				var body, _ = http4go.CopyBody(c.Request)
+				var bodyBytes, _ = ioutil.ReadAll(body)
+
+				w.WriteString("Body: \n")
+				w.Write(bodyBytes)
+				w.WriteString("\n")
+			}
+
+			logger.Log(w.String())
+
+		}
 	}
 }
 
