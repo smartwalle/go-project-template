@@ -15,11 +15,9 @@ require (
 	github.com/smartwalle/dbr v1.1.3
 	github.com/smartwalle/dbs v1.1.7
 	github.com/smartwalle/errors v1.0.3
-	github.com/smartwalle/form v1.0.2 // indirect
-	github.com/smartwalle/http4go v0.0.6 // indirect
 	github.com/smartwalle/log4go v1.0.3
-	github.com/smartwalle/validator v1.0.2 // indirect
-	github.com/smartwalle/xid v1.0.6 // indirect
+	github.com/smartwalle/nhttp v0.0.7
+	github.com/smartwalle/xid v1.0.6
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.1
 	github.com/swaggo/swag v1.8.3

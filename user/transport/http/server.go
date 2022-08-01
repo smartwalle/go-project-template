@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/errors"
-	"github.com/smartwalle/http4go"
 	"github.com/smartwalle/log4go"
+	"github.com/smartwalle/nhttp"
 	"github.com/smartwalle/xid"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
@@ -139,7 +139,7 @@ func MidLogger(logger log4go.Logger) gin.HandlerFunc {
 			}
 
 			if c.ContentType() == "application/json" {
-				var body, _ = http4go.CopyBody(c.Request)
+				var body, _ = nhttp.DumpBody(c.Request)
 				var bodyBytes, _ = ioutil.ReadAll(body)
 
 				w.WriteString("Body: \n")
