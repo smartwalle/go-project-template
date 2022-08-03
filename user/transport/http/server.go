@@ -1,11 +1,13 @@
 package http
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/errors"
 	"github.com/smartwalle/log4go"
 	"github.com/smartwalle/nhttp"
+	"github.com/smartwalle/nsign"
 	"github.com/smartwalle/xid"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
@@ -20,6 +22,7 @@ var (
 	ErrInternalError    = errors.New(100001, "内部错误")
 	ErrUnauthorized     = errors.New(100002, "未登录")
 	ErrPermissionDenied = errors.New(100003, "没有操作权限")
+	ErrInvalidSignature = errors.New(100004, "签名错误")
 )
 
 // Response 仅用作生成 Swagger 文档使用
@@ -58,12 +61,15 @@ func NewServer() *Server {
 	nLogger.SetPrefix("[HTTP] ")
 	nLogger.AddWriter("file", log4go.NewFileWriter(log4go.LevelTrace, log4go.WithLogDir("./logs_http"), log4go.WithMaxAge(60*60*24*30)))
 
+	//var signer = nsign.NewSigner(nsign.WithMethod(nsign.NewHashMethod(crypto.MD5)))
+
 	var s = &Server{}
 	s.engine = gin.Default()
 
 	s.engine.Use(MidRequestTag())
 	s.engine.Use(MidCORS())
 	s.engine.Use(MidLogger(nLogger))
+	//s.engine.Use(MidSign(signer))
 
 	s.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -149,6 +155,30 @@ func MidLogger(logger log4go.Logger) gin.HandlerFunc {
 
 			logger.Log(w.String())
 
+		}
+	}
+}
+
+func MidSign(signer *nsign.Signer) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Request.ParseForm()
+
+		var signature, _ = hex.DecodeString(c.Request.Header.Get("Signature"))
+		var valid = true
+
+		if c.ContentType() == "application/json" {
+			var body, _ = nhttp.DumpBody(c.Request)
+			var bodyBytes, _ = ioutil.ReadAll(body)
+			valid = signer.VerifyBytes(bodyBytes, signature)
+		} else {
+			if len(c.Request.Form) > 0 {
+				valid = signer.VerifyValues(c.Request.Form, signature)
+			}
+		}
+
+		if valid == false {
+			JSON(c, http.StatusBadRequest, ErrInvalidSignature, nil)
+			c.AbortWithStatus(http.StatusBadRequest)
 		}
 	}
 }

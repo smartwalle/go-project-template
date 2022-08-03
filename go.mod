@@ -17,6 +17,7 @@ require (
 	github.com/smartwalle/errors v1.0.3
 	github.com/smartwalle/log4go v1.0.3
 	github.com/smartwalle/nhttp v0.0.7
+	github.com/smartwalle/nsign v1.0.6 // indirect
 	github.com/smartwalle/xid v1.0.6
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.1
