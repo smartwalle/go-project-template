@@ -16,7 +16,7 @@ type User struct {
 	FirstName string `sql:"first_name"` // 名
 }
 
-type AddUserParam struct {
+type AddUserOptions struct {
 	Username  string // 用户名
 	LastName  string // 姓
 	FirstName string // 名

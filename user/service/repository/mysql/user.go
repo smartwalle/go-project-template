@@ -53,7 +53,7 @@ func (this *userRepository) GetUserWithUsername(username string) (result *user.U
 	return result, err
 }
 
-func (this *userRepository) AddUser(user *user.AddUserParam) (result int64, err error) {
+func (this *userRepository) AddUser(user *user.AddUserOptions) (result int64, err error) {
 	var ib = dbs.NewInsertBuilder()
 	ib.Table(kTblUser)
 	ib.Columns("username", "last_name", "first_name")
