@@ -14,7 +14,7 @@ type UserRepository interface {
 
 	GetUserWithUsername(username string) (result *user.User, err error)
 
-	AddUser(opts *user.AddUserOptions) (result int64, err error)
+	AddUser(opt *user.AddUserOption) (result int64, err error)
 }
 
 type UserService struct {
@@ -36,8 +36,8 @@ func (this *UserService) GetUserWithId(id int64) (result *user.User, err error) 
 	return result, err
 }
 
-func (this *UserService) AddUser(opts *user.AddUserOptions) (result *user.User, err error) {
-	if opts.Username == "" {
+func (this *UserService) AddUser(opt *user.AddUserOption) (result *user.User, err error) {
+	if opt.Username == "" {
 		return nil, user.UsernameExists
 	}
 
@@ -48,7 +48,7 @@ func (this *UserService) AddUser(opts *user.AddUserOptions) (result *user.User, 
 		}
 	}()
 
-	eUser, err := nUserRepo.GetUserWithUsername(opts.Username)
+	eUser, err := nUserRepo.GetUserWithUsername(opt.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (this *UserService) AddUser(opts *user.AddUserOptions) (result *user.User, 
 		return nil, user.UsernameExists
 	}
 
-	userId, err := nUserRepo.AddUser(opts)
+	userId, err := nUserRepo.AddUser(opt)
 	if err != nil {
 		return nil, err
 	}

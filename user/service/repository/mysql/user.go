@@ -53,11 +53,11 @@ func (this *userRepository) GetUserWithUsername(username string) (result *user.U
 	return result, err
 }
 
-func (this *userRepository) AddUser(user *user.AddUserOptions) (result int64, err error) {
+func (this *userRepository) AddUser(opt *user.AddUserOption) (result int64, err error) {
 	var ib = dbs.NewInsertBuilder()
 	ib.Table(kTblUser)
 	ib.Columns("username", "last_name", "first_name")
-	ib.Values(user.Username, user.LastName, user.FirstName)
+	ib.Values(opt.Username, opt.LastName, opt.FirstName)
 	sResult, err := ib.Exec(this.db)
 	if err != nil {
 		return 0, err
