@@ -1,38 +1,19 @@
 package grpc
 
 import (
-	"context"
-	userGrpc "go-project-template/user/api/grpc"
-	"go-project-template/user/service"
-	"google.golang.org/grpc"
+	"go-project-template/user/api/grpc"
+	"go-project-template/user/model"
 )
 
-type UserHandler struct {
-	userGrpc.UnimplementedUserServer
-	userService *service.UserService
-}
-
-func NewUserHandler(userService *service.UserService) *UserHandler {
-	var h = &UserHandler{}
-	h.userService = userService
-	return h
-}
-
-func (this *UserHandler) Handle(s *grpc.Server) {
-	userGrpc.RegisterUserServer(s, this)
-}
-
-func (this *UserHandler) GetUserWithId(ctx context.Context, req *userGrpc.GetUserReq) (*userGrpc.GetUserRsp, error) {
-	result, err := this.userService.GetUserWithId(req.Id)
-	if err != nil {
-		return nil, err
+func NewGetUserRsp(user *model.User) *grpc.GetUserRsp {
+	if user == nil {
+		return nil
 	}
 
-	var rsp = &userGrpc.GetUserRsp{}
-	rsp.Id = result.Id
-	rsp.Username = result.Username
-	rsp.LastName = result.LastName
-	rsp.FirstName = result.FirstName
-
-	return nil, nil
+	var rsp = &grpc.GetUserRsp{}
+	rsp.Id = user.Id
+	rsp.Username = user.Username
+	rsp.LastName = user.LastName
+	rsp.FirstName = user.FirstName
+	return rsp
 }

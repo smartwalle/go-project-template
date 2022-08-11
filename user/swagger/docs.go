@@ -46,7 +46,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/http.UserRsp"
+                                            "$ref": "#/definitions/http.GetUserRsp"
                                         }
                                     }
                                 }
@@ -90,7 +90,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/http.UserRsp"
+                                            "$ref": "#/definitions/http.GetUserRsp"
                                         }
                                     }
                                 }
@@ -134,7 +134,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/http.UserRsp"
+                                            "$ref": "#/definitions/http.AddUserRsp"
                                         }
                                     }
                                 }
@@ -163,23 +163,7 @@ const docTemplate = `{
                 }
             }
         },
-        "http.Response": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "description": "错误码",
-                    "type": "integer"
-                },
-                "data": {
-                    "description": "数据"
-                },
-                "message": {
-                    "description": "错误消息",
-                    "type": "string"
-                }
-            }
-        },
-        "http.UserRsp": {
+        "http.AddUserRsp": {
             "type": "object",
             "properties": {
                 "first_name": {
@@ -196,6 +180,43 @@ const docTemplate = `{
                 },
                 "username": {
                     "description": "用户名",
+                    "type": "string"
+                }
+            }
+        },
+        "http.GetUserRsp": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "description": "名",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "last_name": {
+                    "description": "姓",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string"
+                }
+            }
+        },
+        "http.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "错误码",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "数据"
+                },
+                "message": {
+                    "description": "错误消息",
                     "type": "string"
                 }
             }

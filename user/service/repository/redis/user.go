@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/smartwalle/dbr"
 	"github.com/smartwalle/dbs"
-	"go-project-template/user"
+	"go-project-template/user/model"
 	"go-project-template/user/service"
 )
 
@@ -33,7 +33,7 @@ func (this *userRepository) WithTx(tx dbs.TX) service.UserRepository {
 	return &repo
 }
 
-func (this *userRepository) GetUserWithId(id int64) (result *user.User, err error) {
+func (this *userRepository) GetUserWithId(id int64) (result *model.User, err error) {
 	var rSess = this.rPool.GetSession()
 	defer rSess.Close()
 

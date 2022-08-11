@@ -11,18 +11,7 @@ definitions:
         description: 用户名
         type: string
     type: object
-  http.Response:
-    properties:
-      code:
-        description: 错误码
-        type: integer
-      data:
-        description: 数据
-      message:
-        description: 错误消息
-        type: string
-    type: object
-  http.UserRsp:
+  http.AddUserRsp:
     properties:
       first_name:
         description: 名
@@ -35,6 +24,32 @@ definitions:
         type: string
       username:
         description: 用户名
+        type: string
+    type: object
+  http.GetUserRsp:
+    properties:
+      first_name:
+        description: 名
+        type: string
+      id:
+        description: id
+        type: integer
+      last_name:
+        description: 姓
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+  http.Response:
+    properties:
+      code:
+        description: 错误码
+        type: integer
+      data:
+        description: 数据
+      message:
+        description: 错误消息
         type: string
     type: object
 info:
@@ -55,7 +70,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/http.UserRsp'
+                  $ref: '#/definitions/http.GetUserRsp'
               type: object
       security:
       - ApiKeyAuth: []
@@ -83,7 +98,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/http.UserRsp'
+                  $ref: '#/definitions/http.GetUserRsp'
               type: object
       summary: 获取指定用户信息
       tags:
@@ -109,7 +124,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/http.UserRsp'
+                  $ref: '#/definitions/http.AddUserRsp'
               type: object
       summary: 添加用户信息
       tags:
