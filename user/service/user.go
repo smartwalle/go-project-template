@@ -44,7 +44,7 @@ func (this *UserService) AddUser(opt *user.AddUserOption) (result *user.User, er
 	var tx, nUserRepo = this.repo.BeginTx()
 	defer func() {
 		if err != nil {
-			tx.Close()
+			tx.Rollback()
 		}
 	}()
 
@@ -54,7 +54,6 @@ func (this *UserService) AddUser(opt *user.AddUserOption) (result *user.User, er
 	}
 
 	if eUser != nil {
-		tx.Rollback()
 		return nil, user.UsernameExists
 	}
 
