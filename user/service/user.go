@@ -14,7 +14,7 @@ type UserRepository interface {
 
 	GetUserWithUsername(username string) (result *user.User, err error)
 
-	AddUser(opt *user.AddUserOption) (result int64, err error)
+	AddUser(opt user.AddUserOption) (result int64, err error)
 }
 
 type UserService struct {
@@ -36,7 +36,7 @@ func (this *UserService) GetUserWithId(id int64) (result *user.User, err error) 
 	return result, err
 }
 
-func (this *UserService) AddUser(opt *user.AddUserOption) (result *user.User, err error) {
+func (this *UserService) AddUser(opt user.AddUserOption) (result *user.User, err error) {
 	if opt.Username == "" {
 		return nil, user.UsernameExists
 	}
