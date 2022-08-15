@@ -16,7 +16,7 @@ type UserRepository interface {
 
 	GetUserWithUsername(username string) (result *model.User, err error)
 
-	AddUser(opt AddUserOptions) (result int64, err error)
+	AddUser(opts AddUserOptions) (result int64, err error)
 }
 
 type UserService struct {
@@ -44,15 +44,15 @@ func (this *UserService) GetUserWithId(id int64) (result *model.User, err error)
 	//return result, err
 }
 
-func (this *UserService) AddUser(opt AddUserOptions) (result *model.User, err error) {
+func (this *UserService) AddUser(opts AddUserOptions) (result *model.User, err error) {
 	result = &model.User{}
 	result.Id = time.Now().Unix()
-	result.Username = opt.Username
-	result.FirstName = opt.FirstName
-	result.LastName = opt.LastName
+	result.Username = opts.Username
+	result.FirstName = opts.FirstName
+	result.LastName = opts.LastName
 	return result, nil
 
-	//if opt.Username == "" {
+	//if opts.Username == "" {
 	//	return nil, model.UsernameExists
 	//}
 	//
@@ -63,7 +63,7 @@ func (this *UserService) AddUser(opt AddUserOptions) (result *model.User, err er
 	//	}
 	//}()
 	//
-	//eUser, err := nUserRepo.GetUserWithUsername(opt.Username)
+	//eUser, err := nUserRepo.GetUserWithUsername(opts.Username)
 	//if err != nil {
 	//	return nil, err
 	//}
@@ -72,7 +72,7 @@ func (this *UserService) AddUser(opt AddUserOptions) (result *model.User, err er
 	//	return nil, model.UsernameExists
 	//}
 	//
-	//userId, err := nUserRepo.AddUser(opt)
+	//userId, err := nUserRepo.AddUser(opts)
 	//if err != nil {
 	//	return nil, err
 	//}
