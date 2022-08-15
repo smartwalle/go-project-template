@@ -33,8 +33,8 @@ type AddUserReq struct {
 	FirstName string `form:"first_name"` // 名
 }
 
-func (this *AddUserReq) AddUserOption() service.AddUserOption {
-	var opt = service.AddUserOption{}
+func (this *AddUserReq) AddUserOption() service.AddUserOptions {
+	var opt = service.AddUserOptions{}
 	opt.Username = this.Username
 	opt.LastName = this.LastName
 	opt.FirstName = this.FirstName

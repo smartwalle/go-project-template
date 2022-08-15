@@ -16,7 +16,7 @@ type UserRepository interface {
 
 	GetUserWithUsername(username string) (result *model.User, err error)
 
-	AddUser(opt AddUserOption) (result int64, err error)
+	AddUser(opt AddUserOptions) (result int64, err error)
 }
 
 type UserService struct {
@@ -44,7 +44,7 @@ func (this *UserService) GetUserWithId(id int64) (result *model.User, err error)
 	//return result, err
 }
 
-func (this *UserService) AddUser(opt AddUserOption) (result *model.User, err error) {
+func (this *UserService) AddUser(opt AddUserOptions) (result *model.User, err error) {
 	result = &model.User{}
 	result.Id = time.Now().Unix()
 	result.Username = opt.Username
