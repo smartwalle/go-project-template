@@ -1,3 +1,4 @@
+basePath: /api
 definitions:
   http.AddUserReq:
     properties:
@@ -52,8 +53,14 @@ definitions:
         description: 错误消息
         type: string
     type: object
+host: localhost:8100
 info:
-  contact: {}
+  contact:
+    name: Swagger Doc
+    url: https://github.com/swaggo/swag/blob/master/README_zh-CN.md
+  description: This is a sample http server.
+  title: Project Name
+  version: "1.0"
 paths:
   /profile:
     get:
@@ -129,4 +136,11 @@ paths:
       summary: 添加用户信息
       tags:
       - user
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

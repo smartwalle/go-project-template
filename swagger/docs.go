@@ -10,7 +10,10 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "Swagger Doc",
+            "url": "https://github.com/swaggo/swag/blob/master/README_zh-CN.md"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -221,17 +224,24 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "1.0",
+	Host:             "localhost:8100",
+	BasePath:         "/api",
+	Schemes:          []string{"http"},
+	Title:            "Project Name",
+	Description:      "This is a sample http server.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

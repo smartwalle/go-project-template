@@ -1,52 +1,98 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/smartwalle/dbr"
-	"github.com/smartwalle/dbs"
 	"github.com/smartwalle/log4go"
+	go_project_template "go-project-template"
+	"go-project-template/config"
+	"go-project-template/pkg"
 	"go-project-template/service"
 	"go-project-template/service/repository/mysql"
 	"go-project-template/service/repository/redis"
-	grpc2 "go-project-template/transport/grpc"
-	http2 "go-project-template/transport/http"
+	_ "go-project-template/swagger"
+	"go-project-template/transport/grpc"
+	"go-project-template/transport/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 )
 
-//  swag init --parseDependency --parseInternal -o ../swagger
+// @title           Project Name
+// @version         1.0
+// @description     This is a sample http server.
+
+// @contact.name   Swagger Doc
+// @contact.url    https://github.com/swaggo/swag/blob/master/README_zh-CN.md
+
+// @schemes   http
+// @host      localhost:8888
+// @BasePath  /api
+
+// @securityDefinitions.apikey  ApiKeyAuth
+// @in                          header
+// @name                        Authorization
+
+// main
+// 在 cmd 目录中执行本命令，生成文档 swag init --parseDependency --parseInternal -o ../swagger
 func main() {
+	// 使用 -v 参数以查看编译信息
+	var showVersion = flag.Bool("v", false, "Build version")
+	flag.Parse()
+	if *showVersion == true {
+		fmt.Println(go_project_template.Version())
+		return
+	}
 
-	// 初始化数据库日志
-	var dbLogger = log4go.New()
-	dbLogger.AddWriter("file", log4go.NewFileWriter(log4go.LevelTrace, log4go.WithLogDir("./logs_dbs"), log4go.WithMaxAge(60*60*24*30)))
-	dbs.SetLogger(dbLogger)
+	// 创建需要用到的文件目录
+	os.Mkdir("./files", os.ModePerm)
 
-	var sClient, _ = dbs.New("mysql", "root:yangfeng@tcp(192.168.1.99:3306)/test?parseTime=true", 30, 5)
-	var rClient, _ = dbr.New("192.168.1.77:6379", "", 1, 10, 5)
+	conf, err := config.LoadIni("./config.ini")
+	if err != nil {
+		log4go.Errorln("加载配置文件发生错误: ", err)
+		os.Exit(-1)
+	}
+
+	// 初始化通用日志
+	pkg.InitDefaultLog(conf.Server)
+
+	// 初始化 SQL
+	var sClient = pkg.NewSQL(conf.SQL)
+	defer sClient.Close()
+
+	// 初始化redis
+	var rClient = pkg.NewRedis(conf.Redis)
+	defer rClient.Close()
+
+	var waiter = &sync.WaitGroup{}
 
 	var userRepo = redis.NewUserRepository(rClient, mysql.NewUserRepository(sClient))
 	var userService = service.NewUserService(userRepo)
 
-	var hServer = http2.NewServer()
-	hServer.AddHandler(http2.NewUserHandler(userService))
-	hServer.Run()
+	// HTTP 服务
+	var hServer = pkg.NewHTTPServer(conf.HTTP)
+	hServer.AddHandler(http.NewUserHandler(userService))
+	hServer.Run(waiter)
 
-	var gServer = grpc2.NewServer()
-	gServer.AddHandler(grpc2.NewUserHandler(userService))
+	var gServer = grpc.NewServer()
+	gServer.AddHandler(grpc.NewUserHandler(userService))
 	gServer.Run()
 
 	var c = make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
+	signal.Notify(c, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
+MainLoop:
 	for {
 		s := <-c
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
-			return
-		case syscall.SIGHUP:
-		default:
-			return
+			break MainLoop
 		}
 	}
+	hServer.Stop()
+
+	log4go.Println("PID", os.Getpid(), "等待任务结束...")
+	waiter.Wait()
+	log4go.Println("PID", os.Getpid(), "任务完成，程序关闭。")
 }
