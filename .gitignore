@@ -14,5 +14,4 @@
 *.out
 .DS_Store
 .idea
-go.sum
 logs*

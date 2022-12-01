@@ -23,10 +23,10 @@ func main() {
 	dbLogger.AddWriter("file", log4go.NewFileWriter(log4go.LevelTrace, log4go.WithLogDir("./logs_dbs"), log4go.WithMaxAge(60*60*24*30)))
 	dbs.SetLogger(dbLogger)
 
-	var db, _ = dbs.NewSQL("mysql", "root:yangfeng@tcp(192.168.1.99:3306)/test?parseTime=true", 30, 5)
-	var rPool = dbr.NewRedis("192.168.1.99:6379", 10, 5)
+	var sClient, _ = dbs.New("mysql", "root:yangfeng@tcp(192.168.1.99:3306)/test?parseTime=true", 30, 5)
+	var rClient, _ = dbr.New("192.168.1.77:6379", "", 1, 10, 5)
 
-	var userRepo = redis.NewUserRepository(rPool, mysql.NewUserRepository(db))
+	var userRepo = redis.NewUserRepository(rClient, mysql.NewUserRepository(sClient))
 	var userService = service.NewUserService(userRepo)
 
 	var hServer = http.NewServer()
