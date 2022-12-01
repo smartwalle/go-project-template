@@ -39,7 +39,7 @@ func (this *UserService) GetUserWithId(id int64) (result *model.User, err error)
 	//	return nil, err
 	//}
 	//if result == nil {
-	//	return nil, model.UserNotExist
+	//	return nil, UserNotExist
 	//}
 	//return result, err
 }
@@ -53,7 +53,7 @@ func (this *UserService) AddUser(opts AddUserOptions) (result *model.User, err e
 	return result, nil
 
 	//if opts.Username == "" {
-	//	return nil, model.UsernameExists
+	//	return nil, UsernameExists
 	//}
 	//
 	//var tx, nUserRepo = this.repo.BeginTx()
@@ -69,7 +69,7 @@ func (this *UserService) AddUser(opts AddUserOptions) (result *model.User, err e
 	//}
 	//
 	//if eUser != nil {
-	//	return nil, model.UsernameExists
+	//	return nil, UsernameExists
 	//}
 	//
 	//userId, err := nUserRepo.AddUser(opts)
