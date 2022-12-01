@@ -1,8 +1,8 @@
 package http
 
 import (
-	"go-project-template/user/model"
-	"go-project-template/user/service"
+	"go-project-template/model"
+	"go-project-template/service"
 )
 
 // GetUserRsp HTTP 接口返回数据

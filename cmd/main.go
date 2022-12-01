@@ -5,11 +5,11 @@ import (
 	"github.com/smartwalle/dbr"
 	"github.com/smartwalle/dbs"
 	"github.com/smartwalle/log4go"
-	"go-project-template/user/service"
-	"go-project-template/user/service/repository/mysql"
-	"go-project-template/user/service/repository/redis"
-	"go-project-template/user/transport/grpc"
-	"go-project-template/user/transport/http"
+	"go-project-template/service"
+	"go-project-template/service/repository/mysql"
+	"go-project-template/service/repository/redis"
+	grpc2 "go-project-template/transport/grpc"
+	http2 "go-project-template/transport/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -29,12 +29,12 @@ func main() {
 	var userRepo = redis.NewUserRepository(rClient, mysql.NewUserRepository(sClient))
 	var userService = service.NewUserService(userRepo)
 
-	var hServer = http.NewServer()
-	hServer.AddHandler(http.NewUserHandler(userService))
+	var hServer = http2.NewServer()
+	hServer.AddHandler(http2.NewUserHandler(userService))
 	hServer.Run()
 
-	var gServer = grpc.NewServer()
-	gServer.AddHandler(grpc.NewUserHandler(userService))
+	var gServer = grpc2.NewServer()
+	gServer.AddHandler(grpc2.NewUserHandler(userService))
 	gServer.Run()
 
 	var c = make(chan os.Signal, 1)

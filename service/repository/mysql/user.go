@@ -2,8 +2,8 @@ package mysql
 
 import (
 	"github.com/smartwalle/dbs"
-	"go-project-template/user/model"
-	"go-project-template/user/service"
+	"go-project-template/model"
+	service2 "go-project-template/service"
 )
 
 const (
@@ -14,18 +14,18 @@ type userRepository struct {
 	db dbs.DB
 }
 
-func NewUserRepository(db dbs.DB) service.UserRepository {
+func NewUserRepository(db dbs.DB) service2.UserRepository {
 	return &userRepository{db: db}
 }
 
-func (this *userRepository) BeginTx() (dbs.TX, service.UserRepository) {
+func (this *userRepository) BeginTx() (dbs.TX, service2.UserRepository) {
 	var tx = dbs.MustTx(this.db)
 	var repo = *this
 	repo.db = tx
 	return tx, &repo
 }
 
-func (this *userRepository) WithTx(tx dbs.TX) service.UserRepository {
+func (this *userRepository) WithTx(tx dbs.TX) service2.UserRepository {
 	var repo = *this
 	repo.db = tx
 	return &repo
@@ -53,7 +53,7 @@ func (this *userRepository) GetUserWithUsername(username string) (result *model.
 	return result, err
 }
 
-func (this *userRepository) AddUser(opts service.AddUserOptions) (result int64, err error) {
+func (this *userRepository) AddUser(opts service2.AddUserOptions) (result int64, err error) {
 	var ib = dbs.NewInsertBuilder()
 	ib.Table(kTblUser)
 	ib.Columns("username", "last_name", "first_name")

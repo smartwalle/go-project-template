@@ -1,8 +1,8 @@
 package grpc
 
 import (
-	"go-project-template/user/api/grpc"
-	"go-project-template/user/model"
+	"go-project-template/api/grpc"
+	"go-project-template/model"
 )
 
 func NewGetUserRsp(user *model.User) *grpc.GetUserRsp {

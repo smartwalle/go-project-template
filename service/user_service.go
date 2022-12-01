@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/smartwalle/dbs"
-	"go-project-template/user/model"
+	"go-project-template/model"
 	"time"
 )
 

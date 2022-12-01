@@ -8,8 +8,8 @@ import (
 	"github.com/smartwalle/dbr"
 	"github.com/smartwalle/dbs"
 	"github.com/smartwalle/nsync/singleflight"
-	"go-project-template/user/model"
-	"go-project-template/user/service"
+	"go-project-template/model"
+	"go-project-template/service"
 )
 
 type userRepository struct {

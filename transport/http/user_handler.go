@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/conv4go"
-	"go-project-template/user/service"
+	"go-project-template/service"
 )
 
 type UserHandler struct {

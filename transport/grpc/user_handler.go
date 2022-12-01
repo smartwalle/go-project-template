@@ -2,13 +2,13 @@ package grpc
 
 import (
 	"context"
-	userGrpc "go-project-template/user/api/grpc"
-	"go-project-template/user/service"
+	grpc2 "go-project-template/api/grpc"
+	"go-project-template/service"
 	"google.golang.org/grpc"
 )
 
 type UserHandler struct {
-	userGrpc.UnimplementedUserServer
+	grpc2.UnimplementedUserServer
 	userService *service.UserService
 }
 
@@ -19,10 +19,10 @@ func NewUserHandler(userService *service.UserService) *UserHandler {
 }
 
 func (this *UserHandler) Handle(s *grpc.Server) {
-	userGrpc.RegisterUserServer(s, this)
+	grpc2.RegisterUserServer(s, this)
 }
 
-func (this *UserHandler) GetUserWithId(ctx context.Context, req *userGrpc.GetUserReq) (*userGrpc.GetUserRsp, error) {
+func (this *UserHandler) GetUserWithId(ctx context.Context, req *grpc2.GetUserReq) (*grpc2.GetUserRsp, error) {
 	user, err := this.userService.GetUserWithId(req.Id)
 	if err != nil {
 		return nil, err

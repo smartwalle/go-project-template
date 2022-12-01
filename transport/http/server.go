@@ -11,7 +11,7 @@ import (
 	"github.com/smartwalle/xid"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
-	_ "go-project-template/user/swagger"
+	_ "go-project-template/swagger"
 	"io/ioutil"
 	"net/http"
 	"strings"
