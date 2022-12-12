@@ -80,7 +80,7 @@ func (this *UserHandler) AddUser(c *gin.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var user, err = this.userService.AddUser(req.AddUserOption())
+	var user, err = this.userService.AddUser(req.AddUserOptions())
 	if err != nil {
 		return nil, err
 	}
