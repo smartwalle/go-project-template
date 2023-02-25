@@ -20,11 +20,10 @@ require (
 	github.com/smartwalle/errors v1.0.3
 	github.com/smartwalle/form v1.0.2
 	github.com/smartwalle/grace v0.0.4
-	github.com/smartwalle/ini4go v1.0.4 // indirect
+	github.com/smartwalle/ini4go v1.0.4
 	github.com/smartwalle/log4go v1.0.5
 	github.com/smartwalle/net4go v0.0.51
 	github.com/smartwalle/nhttp v0.0.7
-	github.com/smartwalle/nsign v1.0.6
 	github.com/smartwalle/nsync v0.0.3
 	github.com/smartwalle/pprof4gin v0.0.6
 	github.com/smartwalle/validator v1.0.2
@@ -33,10 +32,8 @@ require (
 	github.com/swaggo/gin-swagger v1.5.1
 	github.com/swaggo/swag v1.8.3
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
-	golang.org/x/net v0.0.0-20220708220712-1185a9018129 // indirect
-	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/time v0.2.0 // indirect
-	golang.org/x/tools v0.1.11 // indirect
 	google.golang.org/grpc v1.40.0
 	google.golang.org/protobuf v1.28.0
 )
