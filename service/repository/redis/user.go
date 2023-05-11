@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"github.com/smartwalle/dbr"
 	"github.com/smartwalle/dbs"
 	"github.com/smartwalle/nsync/singleflight"
@@ -15,7 +15,7 @@ import (
 type userRepository struct {
 	service.UserRepository
 	rClient dbr.UniversalClient
-	flight  *singleflight.Group
+	flight  singleflight.Group[string]
 }
 
 func NewUserRepository(rPool dbr.UniversalClient, repo service.UserRepository) service.UserRepository {

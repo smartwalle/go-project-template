@@ -2,7 +2,7 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/smartwalle/conv4go"
+	"github.com/smartwalle/nconv"
 	"go-project-template/pkg"
 	"go-project-template/service"
 )
@@ -55,7 +55,7 @@ func (this *UserHandler) Profile(c *gin.Context) (interface{}, error) {
 // @Success 200 {object} Response{data=UserInfo}
 // @Router /user [get]
 func (this *UserHandler) GetUser(c *gin.Context) (interface{}, error) {
-	var id = conv4go.Int64(c.Request.FormValue("id"))
+	var id = nconv.Int64(c.Request.FormValue("id"))
 
 	var user, err = this.userService.GetUserWithId(id)
 	if err != nil {

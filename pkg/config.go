@@ -5,8 +5,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/smartwalle/conv4go"
 	"github.com/smartwalle/log4go"
+	"github.com/smartwalle/nconv"
 	"github.com/smartwalle/net4go"
 	"github.com/smartwalle/xid"
 )
@@ -113,7 +113,7 @@ func (this *HTTPConfig) Address() string {
 			log4go.Errorln("获取随机端口发生错误:", err)
 			os.Exit(-1)
 		}
-		this.Port = conv4go.String(listener.Addr().(*net.TCPAddr).Port)
+		this.Port = nconv.String(listener.Addr().(*net.TCPAddr).Port)
 		listener.Close()
 	}
 	return fmt.Sprintf("%s:%s", this.IP, this.Port)
