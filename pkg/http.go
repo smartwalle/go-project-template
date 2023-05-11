@@ -14,6 +14,7 @@ import (
 	"github.com/smartwalle/xid"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -206,7 +207,7 @@ func BindForm(c *gin.Context, result interface{}) (err error) {
 }
 
 func BindJSON(c *gin.Context, result interface{}) (err error) {
-	body, err := ioutil.ReadAll(c.Request.Body)
+	body, err := io.ReadAll(c.Request.Body)
 	if err = json.Unmarshal(body, &result); err != nil {
 		var logger = getHTTPLogger(c)
 		if logger != nil {

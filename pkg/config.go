@@ -91,8 +91,8 @@ type HTTPConfig struct {
 	Log         bool   `ini:"log"               json:"log"                yaml:"log"`
 	Name        string `ini:"name"              json:"name"               yaml:"name"`
 	Domain      string `ini:"domain"            json:"domain"             yaml:"domain"`
-	SwaggerPath string `ini:"swagger_path"      json:"swagger_path"       yaml:"swagger_path"`
 	PPROFPath   string `ini:"pprof_path"        json:"pprof_path"         yaml:"pprof_path"`
+	SwaggerPath string `ini:"swagger_path"      json:"swagger_path"       yaml:"swagger_path"`
 }
 
 func (this *HTTPConfig) Address() string {
