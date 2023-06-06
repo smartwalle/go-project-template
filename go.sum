@@ -168,10 +168,14 @@ github.com/smartwalle/binding v1.0.2 h1:utuG2S7+6BD7IYn4O3oonN4K4+l/KiuNPWXnA300
 github.com/smartwalle/binding v1.0.2/go.mod h1:mLYtdHR4cKfwQv+CMYBOXBJjQjQMjqga/XcCDWWiWGk=
 github.com/smartwalle/dbc v0.0.18 h1:HeAebZJDCuATkPLfIZnFFyK+vMqblL0vacoCWvSyCgk=
 github.com/smartwalle/dbc v0.0.18/go.mod h1:JsFDfdJxgPbT/6X4kUw/mDumKIH/f3vKpV5EPIuDfqg=
+github.com/smartwalle/dbc v0.0.19 h1:ywyxJVFVgycp2bWTFyOf/OiyA8UB4Pn+p/RfNuN7rmk=
+github.com/smartwalle/dbc v0.0.19/go.mod h1:mO9WdNrdrwUW2Ty2H6hF17aEFXySxQwKmmoJa9wO+AQ=
 github.com/smartwalle/dbr v1.1.7 h1:S8NAPYW+a57GmS1vCHTlaypNxq/TkYM4TZnUfMoDbLM=
 github.com/smartwalle/dbr v1.1.7/go.mod h1:LgzPQbMns492nK1iYYab1eIIcQ++5qtPZf5ist/7LwQ=
 github.com/smartwalle/dbs v1.2.2 h1:O/GR4IAhqvOtqswCi6+B5wHubhgRQ3mVLKfMWbkPbP4=
 github.com/smartwalle/dbs v1.2.2/go.mod h1:h80LXLb1B8aqfMu1xuCSG/AJ8n2TqYsaOsik82TaKs4=
+github.com/smartwalle/dbs v1.2.3 h1:gwj/omwAGYDp7X5I0Btq8uV+U211uFtoWRiqzYqEJ2U=
+github.com/smartwalle/dbs v1.2.3/go.mod h1:TUEab9VBXKGsCFfuISDXJjLduJvZwxgO86eAD7dqcUA=
 github.com/smartwalle/errors v1.0.3 h1:UKy/BNUx2quqtoCbiL1zKXJlkJ4+tPNsJnvQrMo90f8=
 github.com/smartwalle/errors v1.0.3/go.mod h1:qfbmCF546OFTHs4/rfItY3El7nIZW92qsVsN7+RUVsA=
 github.com/smartwalle/form v1.0.2 h1:xBt3BDumNWqi6zNTkRcji30Z/vEZPqXSYefxNxT1ZQA=
@@ -194,6 +198,8 @@ github.com/smartwalle/pprof4gin v0.0.6 h1:tUDr/Um/QWIbwZ2EnA5pwQWZM1q5V/nlixaigC
 github.com/smartwalle/pprof4gin v0.0.6/go.mod h1:YUVwwyEWvu8K9qp35cYDDqT/2AS/J3PduFNOQmSPFl8=
 github.com/smartwalle/queue v0.0.3 h1:6QpTliu/gS2vdk/vXXDU8WEcC0/d/M/Ft+xXxkv9kRw=
 github.com/smartwalle/queue v0.0.3/go.mod h1:zMEHt/7zLtVwATDUQi3OdBUlbQ2XUzWd7OXP8p/684c=
+github.com/smartwalle/queue v0.0.4 h1:h2YfM/I1yjPOQjMkhPOVuN5cSk62fRPqzqhlyZ/5zDA=
+github.com/smartwalle/queue v0.0.4/go.mod h1:zMEHt/7zLtVwATDUQi3OdBUlbQ2XUzWd7OXP8p/684c=
 github.com/smartwalle/validator v1.0.2 h1:SFjukZ9OTVzCcBSo+Y6yzpFZpzoyKvSb1HDwWvIn9vw=
 github.com/smartwalle/validator v1.0.2/go.mod h1:KZ2a5Ctvs3uSgNlYxHuT1QS85cwyg3zGjpWXsYChWNY=
 github.com/smartwalle/xid v1.0.6 h1:aZ52pzrFSpzg+AIbSsiBxadjAZRctvDSkp5AokOHuFw=
