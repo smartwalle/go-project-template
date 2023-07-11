@@ -13,12 +13,9 @@ type UserInfo struct {
 	FirstName string `json:"first_name"` // 名
 }
 
-// NewUserInfo 转换一次，将数据实体和返回数据职责分离
-func NewUserInfo(user *model.User) *UserInfo {
-	if user == nil {
-		return nil
-	}
-	var nUser = &UserInfo{}
+// ParseUserInfo 转换一次，将数据实体和返回数据职责分离
+func ParseUserInfo(user *model.User) UserInfo {
+	var nUser = UserInfo{}
 	nUser.Id = user.Id
 	nUser.Username = user.Username
 	nUser.LastName = user.LastName
@@ -26,14 +23,14 @@ func NewUserInfo(user *model.User) *UserInfo {
 	return nUser
 }
 
-// AddUserReq HTTP 接口请求参数
-type AddUserReq struct {
-	Username  string `form:"username"`   // 用户名
-	LastName  string `form:"last_name"`  // 姓
-	FirstName string `form:"first_name"` // 名
+// AddUserForm HTTP 接口请求参数
+type AddUserForm struct {
+	Username  string `form:"username"      json:"username"`   // 用户名
+	LastName  string `form:"last_name"     json:"last_name"`  // 姓
+	FirstName string `form:"first_name"    json:"first_name"` // 名
 }
 
-func (this *AddUserReq) AddUserOptions() service.AddUserOptions {
+func (this *AddUserForm) AddUserOptions() service.AddUserOptions {
 	var opts = service.AddUserOptions{}
 	opts.Username = this.Username
 	opts.LastName = this.LastName

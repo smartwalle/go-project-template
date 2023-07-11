@@ -61,7 +61,7 @@ func (this *UserHandler) GetUser(c *gin.Context) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewUserInfo(user), nil
+	return ParseUserInfo(user), nil
 }
 
 // AddUser 添加用户信息
@@ -71,18 +71,18 @@ func (this *UserHandler) GetUser(c *gin.Context) (interface{}, error) {
 // @Tags user
 // @Accept json
 // @Produce json
-// @Param object body AddUserReq true "用户信息"
+// @Param object body AddUserForm true "用户信息"
 // @Success 200 {object} Response{data=UserInfo}
 // @Router /user [post]
 func (this *UserHandler) AddUser(c *gin.Context) (interface{}, error) {
-	var req *AddUserReq
-	if err := pkg.BindJSON(c, &req); err != nil {
+	var form *AddUserForm
+	if err := pkg.BindJSON(c, &form); err != nil {
 		return nil, err
 	}
 
-	var user, err = this.userService.AddUser(req.AddUserOptions())
+	var user, err = this.userService.AddUser(form.AddUserOptions())
 	if err != nil {
 		return nil, err
 	}
-	return NewUserInfo(user), nil
+	return ParseUserInfo(user), nil
 }
