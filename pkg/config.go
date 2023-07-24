@@ -88,7 +88,6 @@ func (this *GRPCConfig) GetService() string {
 type HTTPConfig struct {
 	IP          string `ini:"ip"                json:"ip"                 yaml:"ip"`
 	Port        string `ini:"port"              json:"port"               yaml:"port"`
-	Log         bool   `ini:"log"               json:"log"                yaml:"log"`
 	Name        string `ini:"name"              json:"name"               yaml:"name"`
 	Domain      string `ini:"domain"            json:"domain"             yaml:"domain"`
 	PPROFPath   string `ini:"pprof_path"        json:"pprof_path"         yaml:"pprof_path"`

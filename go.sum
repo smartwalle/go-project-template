@@ -212,8 +212,12 @@ github.com/smartwalle/net4go v0.0.51 h1:3yL7xu9/9FRwN86aAjBu35Wfo2PDSOnivdNmUaIx
 github.com/smartwalle/net4go v0.0.51/go.mod h1:gzSN2xADMI/Zn8wxnDMK5sMfweOjARMpbAzkSicXBrs=
 github.com/smartwalle/nhttp v0.0.7 h1:Ia24yUBdI7Fhdubo2cJ3l8AEvRh3shGj7zPe3gcy8zA=
 github.com/smartwalle/nhttp v0.0.7/go.mod h1:z1TnqO08p6sR/qpbUozgGRQdWw5qzjIUbZOj3HSrL4s=
+github.com/smartwalle/nhttp v0.0.8 h1:fLaD20LVPIdV0xaVtmAecDoDi3+/RB8HYrcc/j2PG0Y=
+github.com/smartwalle/nhttp v0.0.8/go.mod h1:z1TnqO08p6sR/qpbUozgGRQdWw5qzjIUbZOj3HSrL4s=
 github.com/smartwalle/nsync v0.0.4 h1:QEiw/THw0oiyxMVvUhcoTKPN6r4v3oBVqiYQoHIMAy0=
 github.com/smartwalle/nsync v0.0.4/go.mod h1:nMMP9E4eXlpDrSW8amkScDfrwyQt7VKpG2PJzeS6U+I=
+github.com/smartwalle/nsync v0.0.6 h1:rESfGKm3rzWIrmj3uGaNOX0qDZ8x1V/zOCf/rfs8FMY=
+github.com/smartwalle/nsync v0.0.6/go.mod h1:nMMP9E4eXlpDrSW8amkScDfrwyQt7VKpG2PJzeS6U+I=
 github.com/smartwalle/pprof4gin v0.0.6 h1:tUDr/Um/QWIbwZ2EnA5pwQWZM1q5V/nlixaigCi+Doo=
 github.com/smartwalle/pprof4gin v0.0.6/go.mod h1:YUVwwyEWvu8K9qp35cYDDqT/2AS/J3PduFNOQmSPFl8=
 github.com/smartwalle/queue v0.0.3 h1:6QpTliu/gS2vdk/vXXDU8WEcC0/d/M/Ft+xXxkv9kRw=

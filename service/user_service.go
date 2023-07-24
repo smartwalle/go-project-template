@@ -8,9 +8,9 @@ import (
 )
 
 type UserRepository interface {
-	BeginTx() (dbs.TX, UserRepository)
+	BeginTx() (*dbs.Tx, UserRepository)
 
-	WithTx(tx dbs.TX) UserRepository
+	WithTx(tx *dbs.Tx) UserRepository
 
 	GetUserWithId(id int64) (result *model.User, err error)
 

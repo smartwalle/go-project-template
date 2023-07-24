@@ -9,18 +9,16 @@ require (
 	github.com/google/uuid v1.1.2
 	github.com/redis/go-redis/v9 v9.0.3
 	github.com/smartwalle/dbr v1.1.7
-	github.com/smartwalle/dbs v1.2.3
+	github.com/smartwalle/dbs v1.2.4
 	github.com/smartwalle/errors v1.0.3
-	github.com/smartwalle/form v1.0.2
 	github.com/smartwalle/grace v0.0.4
 	github.com/smartwalle/ini4go v1.0.4
 	github.com/smartwalle/log4go v1.0.5
 	github.com/smartwalle/nconv v1.0.4
 	github.com/smartwalle/net4go v0.0.51
-	github.com/smartwalle/nhttp v0.0.7
-	github.com/smartwalle/nsync v0.0.4
+	github.com/smartwalle/nhttp v0.0.8
+	github.com/smartwalle/nsync v0.0.6
 	github.com/smartwalle/pprof4gin v0.0.6
-	github.com/smartwalle/validator v1.0.2
 	github.com/smartwalle/xid v1.0.6
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.1

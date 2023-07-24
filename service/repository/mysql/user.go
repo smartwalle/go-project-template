@@ -11,23 +11,27 @@ const (
 )
 
 type userRepository struct {
-	db dbs.DB
+	db *DB
 }
 
-func NewUserRepository(db dbs.DB) service.UserRepository {
-	return &userRepository{db: db}
+func NewUserRepository(db dbs.Database) service.UserRepository {
+	return &userRepository{db: NewDB(db)}
 }
 
-func (this *userRepository) BeginTx() (dbs.TX, service.UserRepository) {
-	var tx = dbs.MustTx(this.db)
+func (this *userRepository) BeginTx() (*dbs.Tx, service.UserRepository) {
+	var db, tx, err = this.db.Begin()
+	if err != nil {
+		panic(err)
+		return nil, nil
+	}
 	var repo = *this
-	repo.db = tx
+	repo.db = db
 	return tx, &repo
 }
 
-func (this *userRepository) WithTx(tx dbs.TX) service.UserRepository {
+func (this *userRepository) WithTx(tx *dbs.Tx) service.UserRepository {
 	var repo = *this
-	repo.db = tx
+	repo.db = repo.db.Clone(tx)
 	return &repo
 }
 
@@ -36,7 +40,7 @@ func (this *userRepository) GetUserWithId(id int64) (result *model.User, err err
 	sb.Selects("u.id", "u.username", "u.last_name", "u.first_name")
 	sb.From(kTblUser, "AS u")
 	sb.Where("u.id = ?", id)
-	if err = sb.Scan(this.db, &result); err != nil {
+	if err = sb.Scan(this.db, &result); err != nil && err != dbs.ErrNoRows {
 		return nil, err
 	}
 	return result, err
@@ -47,7 +51,7 @@ func (this *userRepository) GetUserWithUsername(username string) (result *model.
 	sb.Selects("u.id", "u.username", "u.last_name", "u.first_name")
 	sb.From(kTblUser, "AS u")
 	sb.Where("u.username = ?", username)
-	if err = sb.Scan(this.db, &result); err != nil {
+	if err = sb.Scan(this.db, &result); err != nil && err != dbs.ErrNoRows {
 		return nil, err
 	}
 	return result, err

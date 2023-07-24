@@ -15,59 +15,55 @@ import (
 type userRepository struct {
 	service.UserRepository
 	rClient dbr.UniversalClient
-	flight  singleflight.Group[string]
+	flight  singleflight.Group[string, *model.User]
 }
 
 func NewUserRepository(rPool dbr.UniversalClient, repo service.UserRepository) service.UserRepository {
 	var r = &userRepository{}
 	r.rClient = rPool
 	r.UserRepository = repo
-	r.flight = singleflight.New()
+	r.flight = singleflight.NewGroup[string, *model.User]()
 	return r
 }
 
-func (this *userRepository) BeginTx() (dbs.TX, service.UserRepository) {
+func (this *userRepository) BeginTx() (*dbs.Tx, service.UserRepository) {
 	var repo = *this
-	var tx dbs.TX
+	var tx *dbs.Tx
 	tx, repo.UserRepository = this.UserRepository.BeginTx()
 	return tx, &repo
 }
 
-func (this *userRepository) WithTx(tx dbs.TX) service.UserRepository {
+func (this *userRepository) WithTx(tx *dbs.Tx) service.UserRepository {
 	var repo = *this
 	repo.UserRepository = this.UserRepository.WithTx(tx)
 	return &repo
 }
 
-func (this *userRepository) GetUserWithId(id int64) (result *model.User, err error) {
-	data, err := this.flight.Do(fmt.Sprintf("user_%d", id), func(key string) (interface{}, error) {
+func (this *userRepository) GetUserWithId(id int64) (*model.User, error) {
+	return this.flight.Do(fmt.Sprintf("user:%d", id), func(key string) (*model.User, error) {
 		bytes, err := this.rClient.Get(context.Background(), key).Bytes()
 		if err != nil && err != redis.Nil {
 			return nil, err
 		}
 
-		var nUser *model.User
+		var user *model.User
 		if len(bytes) > 0 {
-			json.Unmarshal(bytes, &nUser)
-			if nUser != nil {
-				return nUser, nil
+			if err = json.Unmarshal(bytes, &user); err != nil {
+				return nil, err
+			}
+			if user != nil {
+				return user, nil
 			}
 		}
 
-		nUser, err = this.UserRepository.GetUserWithId(id)
+		user, err = this.UserRepository.GetUserWithId(id)
 		if err != nil {
 			return nil, err
 		}
-		if nUser != nil {
-			bytes, _ = json.Marshal(nUser)
+		if user != nil {
+			bytes, _ = json.Marshal(user)
 			this.rClient.Set(context.Background(), key, bytes, 0)
 		}
-		return nUser, err
+		return user, err
 	})
-
-	if err != nil {
-		return nil, err
-	}
-	result, _ = data.(*model.User)
-	return result, err
 }

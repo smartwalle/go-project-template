@@ -2,24 +2,18 @@ package pkg
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/errors"
-	"github.com/smartwalle/form"
 	"github.com/smartwalle/grace"
 	"github.com/smartwalle/log4go"
 	"github.com/smartwalle/nhttp"
 	"github.com/smartwalle/pprof4gin"
-	"github.com/smartwalle/validator"
 	"github.com/smartwalle/xid"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 )
 
@@ -39,7 +33,6 @@ func GetAuthorization(ctx *gin.Context) string {
 type HTTPServer struct {
 	conf   HTTPConfig
 	engine *gin.Engine
-	logger log4go.Logger
 }
 
 type HTTPHandler interface {
@@ -52,13 +45,6 @@ func NewHTTPServer(conf HTTPConfig) *HTTPServer {
 	s.engine = gin.Default()
 	s.engine.Use(gin.Recovery())
 	s.engine.Use(MidRequestTag())
-	if conf.Log {
-		s.logger = log4go.New()
-		s.logger.DisablePath()
-		s.logger.SetPrefix("[HTTP] ")
-		s.logger.AddWriter("file", log4go.NewFileWriter(log4go.LevelTrace, log4go.WithLogDir("./logs_http"), log4go.WithMaxAge(60*60*24*30)))
-		s.engine.Use(MidLog(s.logger))
-	}
 	s.engine.Use(MidCORS())
 
 	s.engine.GET(filepath.Join(conf.SwaggerPath, "/swagger/*any"), ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -118,46 +104,46 @@ func MidRequestTag() gin.HandlerFunc {
 	}
 }
 
-func MidLog(logger log4go.Logger) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Request.ParseForm()
-
-		if logger != nil {
-			var w = &strings.Builder{}
-			w.WriteString(fmt.Sprintf("%s - %s \n", c.Request.Method, c.Request.URL.Path))
-			w.WriteString(fmt.Sprintf("Header: \n"))
-			for key, value := range c.Request.Header {
-				w.WriteString(fmt.Sprintf("- %v: %v \n", key, value))
-			}
-
-			if len(c.Request.Form) > 0 {
-				w.WriteString(fmt.Sprintf("Form: \n"))
-				for key, value := range c.Request.Form {
-					w.WriteString(fmt.Sprintf("- %v: %v \n", key, value))
-				}
-			}
-
-			if c.ContentType() == "application/json" {
-				var body, _ = nhttp.DumpBody(c.Request)
-				var bodyBytes, _ = ioutil.ReadAll(body)
-
-				w.WriteString("Body: \n")
-				w.Write(bodyBytes)
-				w.WriteString("\n")
-			}
-			logger.Log(w.String())
-			c.Set("logger", logger)
-		}
-	}
-}
-
-func getHTTPLogger(c *gin.Context) log4go.Logger {
-	var data, ok = c.Get("logger")
-	if !ok {
-		return nil
-	}
-	return data.(log4go.Logger)
-}
+//func MidLog(logger log4go.Logger) gin.HandlerFunc {
+//	return func(c *gin.Context) {
+//		c.Request.ParseForm()
+//
+//		if logger != nil {
+//			var w = &strings.Builder{}
+//			w.WriteString(fmt.Sprintf("%s - %s \n", c.Request.Method, c.Request.URL.Path))
+//			w.WriteString(fmt.Sprintf("Header: \n"))
+//			for key, value := range c.Request.Header {
+//				w.WriteString(fmt.Sprintf("- %v: %v \n", key, value))
+//			}
+//
+//			if len(c.Request.Form) > 0 {
+//				w.WriteString(fmt.Sprintf("Form: \n"))
+//				for key, value := range c.Request.Form {
+//					w.WriteString(fmt.Sprintf("- %v: %v \n", key, value))
+//				}
+//			}
+//
+//			if c.ContentType() == "application/json" {
+//				var body, _ = nhttp.DumpRequestBody(c.Request)
+//				var bodyBytes, _ = io.ReadAll(body)
+//
+//				w.WriteString("Body: \n")
+//				w.Write(bodyBytes)
+//				w.WriteString("\n")
+//			}
+//			logger.Log(w.String())
+//			c.Set("logger", logger)
+//		}
+//	}
+//}
+//
+//func getHTTPLogger(c *gin.Context) log4go.Logger {
+//	var data, ok = c.Get("logger")
+//	if !ok {
+//		return nil
+//	}
+//	return data.(log4go.Logger)
+//}
 
 func JSON(c *gin.Context, status int, err error, data interface{}) {
 	var rsp error
@@ -188,39 +174,43 @@ func JSONWrapper(handler func(*gin.Context) (interface{}, error)) func(*gin.Cont
 }
 
 func BindForm(c *gin.Context, result interface{}) (err error) {
-	c.Request.ParseForm()
-	if err = form.BindWithRequest(c.Request, result); err != nil {
-		var logger = getHTTPLogger(c)
-		if logger != nil {
-			logger.Warnf("[%s] %s %s 绑定 HTTP 请求参数失败: %s \n", c.Request.Method, c.Request.URL.Path, err)
-		}
+	if err = c.Request.ParseForm(); err != nil {
 		return err
 	}
-	if err = validator.Check(result); err != nil {
-		var logger = getHTTPLogger(c)
-		if logger != nil {
-			logger.Warnf("[%s] %s %s HTTP 请求参数验证失败: %s \n", c.Request.Method, c.Request.URL.Path, err)
-		}
-		return err
-	}
-	return nil
+	return nhttp.Bind(c.Request.Form, result)
+	//if err = nhttp.Bind(c.Request.Form, result); err != nil {
+	//var logger = getHTTPLogger(c)
+	//if logger != nil {
+	//	logger.Warnf("[%s] %s %s 绑定 HTTP 请求参数失败: %s \n", c.Request.Method, c.Request.URL.Path, err)
+	//}
+	//return err
+	//}
+	//if err = validator.Check(result); err != nil {
+	//	var logger = getHTTPLogger(c)
+	//	if logger != nil {
+	//		logger.Warnf("[%s] %s %s HTTP 请求参数验证失败: %s \n", c.Request.Method, c.Request.URL.Path, err)
+	//	}
+	//	return err
+	//}
+	//return nil
 }
 
 func BindJSON(c *gin.Context, result interface{}) (err error) {
-	body, err := io.ReadAll(c.Request.Body)
-	if err = json.Unmarshal(body, &result); err != nil {
-		var logger = getHTTPLogger(c)
-		if logger != nil {
-			logger.Warnf("[%s] %s %s 绑定 HTTP 请求参数失败: %s \n", c.Request.Method, c.Request.URL.Path, err)
-		}
-		return err
-	}
-	if err = validator.Check(result); err != nil {
-		var logger = getHTTPLogger(c)
-		if logger != nil {
-			logger.Warnf("[%s] %s %s HTTP 请求参数验证失败: %s \n", c.Request.Method, c.Request.URL.Path, err)
-		}
-		return err
-	}
-	return nil
+	return json.NewDecoder(c.Request.Body).Decode(result)
+	//body, err := io.ReadAll(c.Request.Body)
+	//if err = json.Unmarshal(body, &result); err != nil {
+	//var logger = getHTTPLogger(c)
+	//if logger != nil {
+	//	logger.Warnf("[%s] %s %s 绑定 HTTP 请求参数失败: %s \n", c.Request.Method, c.Request.URL.Path, err)
+	//}
+	//return err
+	//}
+	//if err = validator.Check(result); err != nil {
+	//	var logger = getHTTPLogger(c)
+	//	if logger != nil {
+	//		logger.Warnf("[%s] %s %s HTTP 请求参数验证失败: %s \n", c.Request.Method, c.Request.URL.Path, err)
+	//	}
+	//	return err
+	//}
+	//return nil
 }
