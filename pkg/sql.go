@@ -1,7 +1,9 @@
 package pkg
 
 import (
+	"context"
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"github.com/smartwalle/dbs"
 	"github.com/smartwalle/log4go"
 	"os"
@@ -18,4 +20,12 @@ func NewSQL(conf SQLConfig) *dbs.DB {
 		os.Exit(-1)
 	}
 	return dbs.New(db)
+}
+
+func PrepareStatement(ctx context.Context, db *dbs.DB, key string, clause dbs.SQLClause) error {
+	var query, _, err = clause.SQL()
+	if err != nil {
+		return err
+	}
+	return db.PrepareStatement(ctx, key, query)
 }

@@ -53,32 +53,32 @@ func NewHTTPServer(conf HTTPConfig) *HTTPServer {
 	return s
 }
 
-func (this *HTTPServer) Use(middleware ...gin.HandlerFunc) {
-	this.engine.Use(middleware...)
+func (server *HTTPServer) Use(middleware ...gin.HandlerFunc) {
+	server.engine.Use(middleware...)
 }
 
-func (this *HTTPServer) Run(waiter *sync.WaitGroup) error {
-	go this.run(this.conf.Address(), waiter)
+func (server *HTTPServer) Run(waiter *sync.WaitGroup) error {
+	go server.run(server.conf.Address(), waiter)
 	return nil
 }
 
-func (this *HTTPServer) run(mainAddress string, waiter *sync.WaitGroup) {
+func (server *HTTPServer) run(mainAddress string, waiter *sync.WaitGroup) {
 	var mainServer = &http.Server{}
 	mainServer.Addr = mainAddress
-	mainServer.Handler = this.engine
+	mainServer.Handler = server.engine
 
 	if err := grace.ServeWithOptions([]*http.Server{mainServer}, grace.WithWaiter(waiter)); err != nil {
 		log4go.Errorf("启动 http 服务发生错误: %s \n", err)
-		this.Stop()
+		server.Stop()
 		os.Exit(-1)
 	}
 }
 
-func (this *HTTPServer) Stop() {
+func (server *HTTPServer) Stop() {
 }
 
-func (this *HTTPServer) AddHandler(h HTTPHandler) {
-	h.Handle(this.engine.Group("/api"))
+func (server *HTTPServer) AddHandler(h HTTPHandler) {
+	h.Handle(server.engine.Group("/api"))
 }
 
 func MidCORS() gin.HandlerFunc {

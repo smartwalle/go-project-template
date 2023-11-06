@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"github.com/smartwalle/dbs"
 	"go-project-template/model"
@@ -8,15 +9,15 @@ import (
 )
 
 type UserRepository interface {
-	BeginTx() (*dbs.Tx, UserRepository)
+	BeginTx(ctx context.Context) (*dbs.Tx, UserRepository, error)
 
 	WithTx(tx *dbs.Tx) UserRepository
 
-	GetUserWithId(id int64) (result *model.User, err error)
+	GetUserWithId(ctx context.Context, id int64) (result *model.User, err error)
 
-	GetUserWithUsername(username string) (result *model.User, err error)
+	GetUserWithUsername(ctx context.Context, username string) (result *model.User, err error)
 
-	AddUser(opts AddUserOptions) (result int64, err error)
+	AddUser(ctx context.Context, opts AddUserOptions) (result int64, err error)
 }
 
 type UserService struct {
@@ -27,14 +28,14 @@ func NewUserService(repo UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (this *UserService) GetUserWithId(id int64) (result *model.User, err error) {
+func (service *UserService) GetUserWithId(ctx context.Context, id int64) (result *model.User, err error) {
 	result = &model.User{}
 	result.Id = id
 	result.Username = fmt.Sprintf("rsp-%d", id)
 	result.FirstName = fmt.Sprintf("first name-%d", id)
 	result.LastName = fmt.Sprintf("last name-%d", id)
 	return result, nil
-	//result, err = this.repo.GetUserWithId(id)
+	//result, err = service.repo.GetUserWithId(id)
 	//if err != nil {
 	//	return nil, err
 	//}
@@ -44,7 +45,7 @@ func (this *UserService) GetUserWithId(id int64) (result *model.User, err error)
 	//return result, err
 }
 
-func (this *UserService) AddUser(opts AddUserOptions) (result *model.User, err error) {
+func (service *UserService) AddUser(ctx context.Context, opts AddUserOptions) (result *model.User, err error) {
 	result = &model.User{}
 	result.Id = time.Now().Unix()
 	result.Username = opts.Username
@@ -56,7 +57,7 @@ func (this *UserService) AddUser(opts AddUserOptions) (result *model.User, err e
 	//	return nil, UsernameExists
 	//}
 	//
-	//var tx, nUserRepo = this.repo.BeginTx()
+	//var tx, nUserRepo = service.repo.BeginTx()
 	//defer func() {
 	//	if err != nil {
 	//		tx.Rollback()

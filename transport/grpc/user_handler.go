@@ -18,12 +18,12 @@ func NewUserHandler(userService *service.UserService) *UserHandler {
 	return h
 }
 
-func (this *UserHandler) Handle(s *grpc.Server) {
-	grpc2.RegisterUserServer(s, this)
+func (h *UserHandler) Handle(s *grpc.Server) {
+	grpc2.RegisterUserServer(s, h)
 }
 
-func (this *UserHandler) GetUserWithId(ctx context.Context, req *grpc2.GetUserReq) (*grpc2.GetUserRsp, error) {
-	user, err := this.userService.GetUserWithId(req.Id)
+func (h *UserHandler) GetUserWithId(ctx context.Context, req *grpc2.GetUserReq) (*grpc2.GetUserRsp, error) {
+	user, err := h.userService.GetUserWithId(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}

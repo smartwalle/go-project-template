@@ -7,14 +7,15 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/google/uuid v1.3.1
+	github.com/lib/pq v1.10.9
 	github.com/redis/go-redis/v9 v9.2.1
 	github.com/smartwalle/dbr v1.1.7
-	github.com/smartwalle/dbs v1.2.6
+	github.com/smartwalle/dbs v1.2.7
 	github.com/smartwalle/errors v1.0.5
 	github.com/smartwalle/grace v0.0.4
 	github.com/smartwalle/ini4go v1.0.4
 	github.com/smartwalle/log4go v1.0.5
-	github.com/smartwalle/nconv v1.0.4
+	github.com/smartwalle/nconv v1.0.5
 	github.com/smartwalle/net4go v0.0.52
 	github.com/smartwalle/nhttp v0.0.10
 	github.com/smartwalle/nsync v0.0.7

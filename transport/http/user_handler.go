@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/nconv"
 	"go-project-template/pkg"
@@ -17,12 +18,12 @@ func NewUserHandler(userService *service.UserService) *UserHandler {
 	return h
 }
 
-func (this *UserHandler) Handle(r gin.IRouter) {
-	r.GET("/profile", pkg.JSONWrapper(this.Profile))
+func (h *UserHandler) Handle(r gin.IRouter) {
+	r.GET("/profile", pkg.JSONWrapper(h.Profile))
 
-	r.GET("/user", pkg.JSONWrapper(this.GetUser))
+	r.GET("/user", pkg.JSONWrapper(h.GetUser))
 
-	r.POST("/user", pkg.JSONWrapper(this.AddUser))
+	r.POST("/user", pkg.JSONWrapper(h.AddUser))
 }
 
 // Profile 获取当前登录用户信息
@@ -35,7 +36,7 @@ func (this *UserHandler) Handle(r gin.IRouter) {
 // @Success 200 {object} Response{data=UserInfo}
 // @Security ApiKeyAuth
 // @Router /profile [get]
-func (this *UserHandler) Profile(c *gin.Context) (interface{}, error) {
+func (h *UserHandler) Profile(c *gin.Context) (interface{}, error) {
 	var nUser = &UserInfo{}
 	nUser.Id = 1
 	nUser.Username = "SmartWalle"
@@ -54,10 +55,10 @@ func (this *UserHandler) Profile(c *gin.Context) (interface{}, error) {
 // @Param id query int true "用户 id"
 // @Success 200 {object} Response{data=UserInfo}
 // @Router /user [get]
-func (this *UserHandler) GetUser(c *gin.Context) (interface{}, error) {
+func (h *UserHandler) GetUser(c *gin.Context) (interface{}, error) {
 	var id = nconv.Int64(c.Request.FormValue("id"))
 
-	var user, err = this.userService.GetUserWithId(id)
+	var user, err = h.userService.GetUserWithId(context.Background(), id)
 	if err != nil {
 		return nil, err
 	}
@@ -74,13 +75,13 @@ func (this *UserHandler) GetUser(c *gin.Context) (interface{}, error) {
 // @Param object body AddUserForm true "用户信息"
 // @Success 200 {object} Response{data=UserInfo}
 // @Router /user [post]
-func (this *UserHandler) AddUser(c *gin.Context) (interface{}, error) {
+func (h *UserHandler) AddUser(c *gin.Context) (interface{}, error) {
 	var form *AddUserForm
 	if err := pkg.BindJSON(c, &form); err != nil {
 		return nil, err
 	}
 
-	var user, err = this.userService.AddUser(form.AddUserOptions())
+	var user, err = h.userService.AddUser(context.Background(), form.AddUserOptions())
 	if err != nil {
 		return nil, err
 	}

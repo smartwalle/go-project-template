@@ -30,10 +30,10 @@ type AddUserForm struct {
 	FirstName string `form:"first_name"    json:"first_name"` // 名
 }
 
-func (this *AddUserForm) AddUserOptions() service.AddUserOptions {
+func (form *AddUserForm) AddUserOptions() service.AddUserOptions {
 	var opts = service.AddUserOptions{}
-	opts.Username = this.Username
-	opts.LastName = this.LastName
-	opts.FirstName = this.FirstName
+	opts.Username = form.Username
+	opts.LastName = form.LastName
+	opts.FirstName = form.FirstName
 	return opts
 }

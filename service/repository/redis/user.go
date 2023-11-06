@@ -26,22 +26,29 @@ func NewUserRepository(rPool dbr.UniversalClient, repo service.UserRepository) s
 	return r
 }
 
-func (this *userRepository) BeginTx() (*dbs.Tx, service.UserRepository) {
-	var repo = *this
+func (repo *userRepository) BeginTx(ctx context.Context) (*dbs.Tx, service.UserRepository, error) {
 	var tx *dbs.Tx
-	tx, repo.UserRepository = this.UserRepository.BeginTx()
-	return tx, &repo
+	var err error
+	var uRepo service.UserRepository
+
+	tx, uRepo, err = repo.UserRepository.BeginTx(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+	var nRepo = *repo
+	nRepo.UserRepository = uRepo
+	return tx, &nRepo, nil
 }
 
-func (this *userRepository) WithTx(tx *dbs.Tx) service.UserRepository {
-	var repo = *this
-	repo.UserRepository = this.UserRepository.WithTx(tx)
-	return &repo
+func (repo *userRepository) WithTx(tx *dbs.Tx) service.UserRepository {
+	var nRepo = *repo
+	nRepo.UserRepository = repo.UserRepository.WithTx(tx)
+	return &nRepo
 }
 
-func (this *userRepository) GetUserWithId(id int64) (*model.User, error) {
-	return this.flight.Do(fmt.Sprintf("user:%d", id), func(key string) (*model.User, error) {
-		bytes, err := this.rClient.Get(context.Background(), key).Bytes()
+func (repo *userRepository) GetUserWithId(ctx context.Context, id int64) (*model.User, error) {
+	return repo.flight.Do(fmt.Sprintf("user:%d", id), func(key string) (*model.User, error) {
+		bytes, err := repo.rClient.Get(ctx, key).Bytes()
 		if err != nil && err != redis.Nil {
 			return nil, err
 		}
@@ -56,13 +63,13 @@ func (this *userRepository) GetUserWithId(id int64) (*model.User, error) {
 			}
 		}
 
-		user, err = this.UserRepository.GetUserWithId(id)
+		user, err = repo.UserRepository.GetUserWithId(ctx, id)
 		if err != nil {
 			return nil, err
 		}
 		if user != nil {
 			bytes, _ = json.Marshal(user)
-			this.rClient.Set(context.Background(), key, bytes, 0)
+			repo.rClient.Set(ctx, key, bytes, 0)
 		}
 		return user, err
 	})

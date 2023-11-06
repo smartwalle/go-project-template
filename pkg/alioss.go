@@ -27,8 +27,8 @@ func NewAliOSSClient(conf AliOSSConfig) *AliOSSClient {
 	return nClient
 }
 
-func (this *AliOSSClient) Upload(file io.Reader, name string) (result string, err error) {
-	bucket, err := this.client.Bucket(this.conf.Bucket)
+func (client *AliOSSClient) Upload(file io.Reader, name string) (result string, err error) {
+	bucket, err := client.client.Bucket(client.conf.Bucket)
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +41,7 @@ func (this *AliOSSClient) Upload(file io.Reader, name string) (result string, er
 
 	uuidName := uuid.New().String() + fileExt
 
-	nPath := path.Join(this.conf.Bucket, uuidName)
+	nPath := path.Join(client.conf.Bucket, uuidName)
 
 	// 上传数据
 	err = bucket.PutObject(nPath, file, storageType, objectAcl)
@@ -49,14 +49,14 @@ func (this *AliOSSClient) Upload(file io.Reader, name string) (result string, er
 		return "", err
 	}
 
-	var nURL = nhttp.MustURL(this.conf.Domain)
+	var nURL = nhttp.MustURL(client.conf.Domain)
 	nURL.JoinPath(nPath)
 
 	return nURL.String(), nil
 }
 
-func (this *AliOSSClient) UploadFile(file string, name string) (string, error) {
-	bucket, err := this.client.Bucket(this.conf.Bucket)
+func (client *AliOSSClient) UploadFile(file string, name string) (string, error) {
+	bucket, err := client.client.Bucket(client.conf.Bucket)
 	if err != nil {
 		return "", err
 	}
@@ -75,7 +75,7 @@ func (this *AliOSSClient) UploadFile(file string, name string) (string, error) {
 		_, nName = path.Split(file)
 	}
 
-	nPath := path.Join(this.conf.Bucket, nName)
+	nPath := path.Join(client.conf.Bucket, nName)
 
 	// 上传数据
 	err = bucket.PutObjectFromFile(nPath, file, storageType, objectAcl)
@@ -83,7 +83,7 @@ func (this *AliOSSClient) UploadFile(file string, name string) (string, error) {
 		return "", err
 	}
 
-	var nURL = nhttp.MustURL(this.conf.Domain)
+	var nURL = nhttp.MustURL(client.conf.Domain)
 	nURL.JoinPath(nPath)
 
 	return nURL.String(), nil

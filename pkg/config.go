@@ -52,37 +52,37 @@ type GRPCConfig struct {
 	GracefulStop  bool   `ini:"graceful_stop"      json:"graceful_stop"       yaml:"graceful_stop"`
 }
 
-func (this *GRPCConfig) GetAddress() string {
-	if this.IP == "" {
+func (cfg *GRPCConfig) GetAddress() string {
+	if cfg.IP == "" {
 		var err error
-		this.IP, err = net4go.GetInternalIP()
+		cfg.IP, err = net4go.GetInternalIP()
 		if err != nil {
 			log4go.Errorln("获取本地 IP 地址发生错误:", err)
 			os.Exit(-1)
 		}
 	}
-	return fmt.Sprintf("%s:%s", this.IP, this.Port)
+	return fmt.Sprintf("%s:%s", cfg.IP, cfg.Port)
 }
 
-func (this *GRPCConfig) GetDomain() string {
-	return this.Domain
+func (cfg *GRPCConfig) GetDomain() string {
+	return cfg.Domain
 }
 
-func (this *GRPCConfig) GetName() string {
-	return this.Name
+func (cfg *GRPCConfig) GetName() string {
+	return cfg.Name
 }
 
-func (this *GRPCConfig) GetNode() string {
-	if this.Node == "" {
-		this.Node = fmt.Sprintf("%d", xid.Next())
+func (cfg *GRPCConfig) GetNode() string {
+	if cfg.Node == "" {
+		cfg.Node = fmt.Sprintf("%d", xid.Next())
 	} else {
-		this.Node = fmt.Sprintf("%s/%d", this.Node, xid.Next())
+		cfg.Node = fmt.Sprintf("%s/%d", cfg.Node, xid.Next())
 	}
-	return this.Node
+	return cfg.Node
 }
 
-func (this *GRPCConfig) GetService() string {
-	return fmt.Sprintf("%s/%s", this.Domain, this.Name)
+func (cfg *GRPCConfig) GetService() string {
+	return fmt.Sprintf("%s/%s", cfg.Domain, cfg.Name)
 }
 
 type HTTPConfig struct {
@@ -94,28 +94,28 @@ type HTTPConfig struct {
 	SwaggerPath string `ini:"swagger_path"      json:"swagger_path"       yaml:"swagger_path"`
 }
 
-func (this *HTTPConfig) Address() string {
-	if this.IP == "" {
+func (cfg *HTTPConfig) Address() string {
+	if cfg.IP == "" {
 		var err error
-		this.IP, err = net4go.GetInternalIP()
+		cfg.IP, err = net4go.GetInternalIP()
 		if err != nil {
 			log4go.Errorln("获取本地 IP 地址发生错误:", err)
 			os.Exit(-1)
 		}
 	}
-	if this.IP == "-" {
-		this.IP = ""
+	if cfg.IP == "-" {
+		cfg.IP = ""
 	}
-	if this.Port == "" || this.Port == "0" {
-		listener, err := net.Listen("tcp", fmt.Sprintf("%s:0", this.IP))
+	if cfg.Port == "" || cfg.Port == "0" {
+		listener, err := net.Listen("tcp", fmt.Sprintf("%s:0", cfg.IP))
 		if err != nil {
 			log4go.Errorln("获取随机端口发生错误:", err)
 			os.Exit(-1)
 		}
-		this.Port = nconv.String(listener.Addr().(*net.TCPAddr).Port)
+		cfg.Port = nconv.String(listener.Addr().(*net.TCPAddr).Port)
 		listener.Close()
 	}
-	return fmt.Sprintf("%s:%s", this.IP, this.Port)
+	return fmt.Sprintf("%s:%s", cfg.IP, cfg.Port)
 }
 
 type TCPConfig struct {
@@ -128,16 +128,16 @@ type TCPConfig struct {
 	PacketPerSecond int    `ini:"packet_per_second"         json:"packet_per_second"    yaml:"packet_per_second"`
 }
 
-func (this *TCPConfig) Address() string {
-	if this.IP == "" {
+func (cfg *TCPConfig) Address() string {
+	if cfg.IP == "" {
 		var err error
-		this.IP, err = net4go.GetInternalIP()
+		cfg.IP, err = net4go.GetInternalIP()
 		if err != nil {
 			log4go.Errorln("获取本地 IP 地址发生错误:", err)
 			os.Exit(-1)
 		}
 	}
-	return fmt.Sprintf("%s:%s", this.IP, this.Port)
+	return fmt.Sprintf("%s:%s", cfg.IP, cfg.Port)
 }
 
 type WebSocketConfig struct {
@@ -149,16 +149,16 @@ type WebSocketConfig struct {
 	WriteBufferSize int    `ini:"write_buffer_size"        json:"write_buffer_size"    yaml:"write_buffer_size"`
 }
 
-func (this *WebSocketConfig) Address() string {
-	if this.IP == "" {
+func (cfg *WebSocketConfig) Address() string {
+	if cfg.IP == "" {
 		var err error
-		this.IP, err = net4go.GetInternalIP()
+		cfg.IP, err = net4go.GetInternalIP()
 		if err != nil {
 			log4go.Errorln("获取本地 IP 地址发生错误:", err)
 			os.Exit(-1)
 		}
 	}
-	return fmt.Sprintf("%s:%s", this.IP, this.Port)
+	return fmt.Sprintf("%s:%s", cfg.IP, cfg.Port)
 }
 
 type NSQConfig struct {

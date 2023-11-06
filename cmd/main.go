@@ -9,7 +9,7 @@ import (
 	"go-project-template/config"
 	"go-project-template/pkg"
 	"go-project-template/service"
-	"go-project-template/service/repository/mysql"
+	"go-project-template/service/repository/postgres"
 	"go-project-template/service/repository/redis"
 	_ "go-project-template/swagger"
 	"go-project-template/transport/grpc"
@@ -68,7 +68,7 @@ func main() {
 
 	var waiter = &sync.WaitGroup{}
 
-	var userRepo = redis.NewUserRepository(rClient, mysql.NewUserRepository(sClient))
+	var userRepo = redis.NewUserRepository(rClient, postgres.NewUserRepository(sClient))
 	var userService = service.NewUserService(userRepo)
 
 	// HTTP 服务
