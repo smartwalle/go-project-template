@@ -5,12 +5,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/errors"
 	"github.com/smartwalle/grace"
-	"github.com/smartwalle/log4go"
 	"github.com/smartwalle/nhttp"
 	"github.com/smartwalle/pprof4gin"
 	"github.com/smartwalle/xid"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -68,7 +68,7 @@ func (server *HTTPServer) run(mainAddress string, waiter *sync.WaitGroup) {
 	mainServer.Handler = server.engine
 
 	if err := grace.ServeWithOptions([]*http.Server{mainServer}, grace.WithWaiter(waiter)); err != nil {
-		log4go.Errorf("启动 http 服务发生错误: %s \n", err)
+		slog.Error("启动 http 服务发生错误", slog.Any("error", err))
 		server.Stop()
 		os.Exit(-1)
 	}

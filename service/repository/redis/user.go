@@ -18,9 +18,9 @@ type userRepository struct {
 	flight  singleflight.Group[string, *model.User]
 }
 
-func NewUserRepository(rPool dbr.UniversalClient, repo service.UserRepository) service.UserRepository {
+func NewUserRepository(rClient dbr.UniversalClient, repo service.UserRepository) service.UserRepository {
 	var r = &userRepository{}
-	r.rClient = rPool
+	r.rClient = rClient
 	r.UserRepository = repo
 	r.flight = singleflight.NewGroup[string, *model.User]()
 	return r

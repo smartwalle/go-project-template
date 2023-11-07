@@ -2,10 +2,10 @@ package pkg
 
 import (
 	"fmt"
+	"log/slog"
 	"net"
 	"os"
 
-	"github.com/smartwalle/log4go"
 	"github.com/smartwalle/nconv"
 	"github.com/smartwalle/net4go"
 	"github.com/smartwalle/xid"
@@ -57,7 +57,7 @@ func (cfg *GRPCConfig) GetAddress() string {
 		var err error
 		cfg.IP, err = net4go.GetInternalIP()
 		if err != nil {
-			log4go.Errorln("获取本地 IP 地址发生错误:", err)
+			slog.Error("获取本地 IP 地址发生错误", slog.Any("error", err))
 			os.Exit(-1)
 		}
 	}
@@ -99,7 +99,7 @@ func (cfg *HTTPConfig) Address() string {
 		var err error
 		cfg.IP, err = net4go.GetInternalIP()
 		if err != nil {
-			log4go.Errorln("获取本地 IP 地址发生错误:", err)
+			slog.Error("获取本地 IP 地址发生错误", slog.Any("error", err))
 			os.Exit(-1)
 		}
 	}
@@ -109,7 +109,7 @@ func (cfg *HTTPConfig) Address() string {
 	if cfg.Port == "" || cfg.Port == "0" {
 		listener, err := net.Listen("tcp", fmt.Sprintf("%s:0", cfg.IP))
 		if err != nil {
-			log4go.Errorln("获取随机端口发生错误:", err)
+			slog.Error("获取随机端口发生错误", slog.Any("error", err))
 			os.Exit(-1)
 		}
 		cfg.Port = nconv.String(listener.Addr().(*net.TCPAddr).Port)
@@ -133,7 +133,7 @@ func (cfg *TCPConfig) Address() string {
 		var err error
 		cfg.IP, err = net4go.GetInternalIP()
 		if err != nil {
-			log4go.Errorln("获取本地 IP 地址发生错误:", err)
+			slog.Error("获取本地 IP 地址发生错误", slog.Any("error", err))
 			os.Exit(-1)
 		}
 	}
@@ -154,7 +154,7 @@ func (cfg *WebSocketConfig) Address() string {
 		var err error
 		cfg.IP, err = net4go.GetInternalIP()
 		if err != nil {
-			log4go.Errorln("获取本地 IP 地址发生错误:", err)
+			slog.Error("获取本地 IP 地址发生错误", slog.Any("error", err))
 			os.Exit(-1)
 		}
 	}

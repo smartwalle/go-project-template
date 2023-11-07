@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/smartwalle/log4go"
 	go_project_template "go-project-template"
 	"go-project-template/config"
 	"go-project-template/pkg"
@@ -14,6 +13,7 @@ import (
 	_ "go-project-template/swagger"
 	"go-project-template/transport/grpc"
 	"go-project-template/transport/http"
+	"log/slog"
 	"os"
 	"os/signal"
 	"sync"
@@ -51,12 +51,13 @@ func main() {
 
 	conf, err := config.LoadIni("./config.ini")
 	if err != nil {
-		log4go.Errorln("加载配置文件发生错误: ", err)
+		slog.Error("加载配置文件发生错误,", slog.Any("error", err))
 		os.Exit(-1)
 	}
 
 	// 初始化通用日志
-	pkg.InitDefaultLog(conf.Server)
+	var syncLog = pkg.InitDefaultLog(conf.Server)
+	defer syncLog()
 
 	// 初始化 SQL
 	var sClient = pkg.NewSQL(conf.SQL)
@@ -92,7 +93,7 @@ MainLoop:
 	}
 	hServer.Stop()
 
-	log4go.Println("PID", os.Getpid(), "等待任务结束...")
+	slog.Info("等待任务结束", slog.Int("PID", os.Getpid()))
 	waiter.Wait()
-	log4go.Println("PID", os.Getpid(), "任务完成，程序关闭。")
+	slog.Info("任务完成，程序关闭", slog.Int("PID", os.Getpid()))
 }

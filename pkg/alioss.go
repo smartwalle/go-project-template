@@ -3,9 +3,9 @@ package pkg
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/google/uuid"
-	"github.com/smartwalle/log4go"
 	"github.com/smartwalle/nhttp"
 	"io"
+	"log/slog"
 	"os"
 	"path"
 )
@@ -20,7 +20,7 @@ func NewAliOSSClient(conf AliOSSConfig) *AliOSSClient {
 	nClient.conf = conf
 	client, err := oss.New(conf.Endpoint, conf.Key, conf.Secret)
 	if err != nil {
-		log4go.Errorln("初始化 ali OSS 发生错误:", err)
+		slog.Error("初始化 ali OSS 发生错误", slog.Any("error", err))
 		os.Exit(-1)
 	}
 	nClient.client = client

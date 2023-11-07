@@ -230,8 +230,6 @@ github.com/smartwalle/grace v0.0.4 h1:+cdBO580z4zVH9hnnffDZU7+AitTYsVEvMDDCpe8jQ
 github.com/smartwalle/grace v0.0.4/go.mod h1:sIyFPOaqngUP1Jj4V5pVngS+g3GVFNKpBTUvrdsnPhE=
 github.com/smartwalle/ini4go v1.0.4 h1:y9ukBApW+yU0hHjXT5yndyRa7Kp/s33olW2IF9FlhWs=
 github.com/smartwalle/ini4go v1.0.4/go.mod h1:xSHZou4Jgvo71h9o6FVFCa9b32FPX5yzjDnkVDbguaY=
-github.com/smartwalle/log4go v1.0.5 h1:UakLj4hdD2PV1vMeZg0b9x/H/0IZLtTtpuBte58XRiM=
-github.com/smartwalle/log4go v1.0.5/go.mod h1:eAxbB2AwZMEeiG4Dn//yA8fOMbc39wUW90GRL9dIqUI=
 github.com/smartwalle/nconv v1.0.4 h1:hCzrVAqkGElpvwin/YatniK0Kuhf6xrATVB3YReUAOE=
 github.com/smartwalle/nconv v1.0.4/go.mod h1:pc7hk4nrpYLG25gl0Im1PIdUzOeJcreDPR3ffIJ9aJ4=
 github.com/smartwalle/nconv v1.0.5 h1:bShE1O4jwW7oPbj3mrGMUktUgSCLHjyZwdQohxcPdYs=
@@ -244,6 +242,8 @@ github.com/smartwalle/nhttp v0.0.8 h1:fLaD20LVPIdV0xaVtmAecDoDi3+/RB8HYrcc/j2PG0
 github.com/smartwalle/nhttp v0.0.8/go.mod h1:z1TnqO08p6sR/qpbUozgGRQdWw5qzjIUbZOj3HSrL4s=
 github.com/smartwalle/nhttp v0.0.10 h1:9jHpzLJ3SHM0egp/quBMCXYBGkDpZJfFkRmkDOkKm/U=
 github.com/smartwalle/nhttp v0.0.10/go.mod h1:z1TnqO08p6sR/qpbUozgGRQdWw5qzjIUbZOj3HSrL4s=
+github.com/smartwalle/nlog v0.0.0-20231017021725-05862bf4f24d h1:GJGdz5U3uMZjaojAWSrpRHL5ZqL/pIMOQX0oUOF0Dn4=
+github.com/smartwalle/nlog v0.0.0-20231017021725-05862bf4f24d/go.mod h1:pxLsI8ys/JyGkJwhZXPNObDz1yiZLuGrd8lsCy5jKzs=
 github.com/smartwalle/nsync v0.0.6 h1:rESfGKm3rzWIrmj3uGaNOX0qDZ8x1V/zOCf/rfs8FMY=
 github.com/smartwalle/nsync v0.0.6/go.mod h1:nMMP9E4eXlpDrSW8amkScDfrwyQt7VKpG2PJzeS6U+I=
 github.com/smartwalle/nsync v0.0.7 h1:yyTe3T4zZ/S+H8ojtrtanS/ur5gMyfV0SbZ4KRdm8yI=
