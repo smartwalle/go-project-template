@@ -55,7 +55,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/smartwalle/dbc v0.0.20 // indirect
-	github.com/smartwalle/nlog v0.0.0-20231017021725-05862bf4f24d // indirect
+	github.com/smartwalle/nlog v0.0.1 // indirect
 	github.com/smartwalle/queue v0.0.4 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
