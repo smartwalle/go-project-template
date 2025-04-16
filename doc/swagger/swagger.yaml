@@ -7,8 +7,6 @@ definitions:
       data: {}
       message:
         type: string
-      status_code:
-        type: integer
     type: object
   project-template_internal_domain.User:
     properties:

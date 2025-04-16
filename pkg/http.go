@@ -11,9 +11,10 @@ func HandlerWrapper(handler func(c *gin.Context) (interface{}, error)) func(*gin
 		if handler != nil {
 			var data, err = handler(c)
 			var response = NewResponse(int(CodeSuccess), data)
+			var statusCode = http.StatusOK
 
 			if err != nil {
-				response.StatusCode = http.StatusBadRequest
+				statusCode = http.StatusBadRequest
 
 				var nErr Error
 				if errors.As(err, &nErr) {
@@ -25,7 +26,7 @@ func HandlerWrapper(handler func(c *gin.Context) (interface{}, error)) func(*gin
 				}
 			}
 
-			c.JSON(response.StatusCode, response)
+			c.JSON(statusCode, response)
 		}
 	}
 }

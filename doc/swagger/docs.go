@@ -80,9 +80,6 @@ const docTemplate = `{
                 "data": {},
                 "message": {
                     "type": "string"
-                },
-                "status_code": {
-                    "type": "integer"
                 }
             }
         },
