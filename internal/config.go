@@ -10,6 +10,10 @@ type HTTP struct {
 	Addr string `yaml:"addr"`
 }
 
+func (h HTTP) Address() string {
+	return h.Addr
+}
+
 type SQL struct {
 	Driver  string `yaml:"driver"`
 	URL     string `yaml:"url"`

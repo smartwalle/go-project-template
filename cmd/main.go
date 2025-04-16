@@ -7,6 +7,7 @@ import (
 	"github.com/smartwalle/bootstrap/http"
 	"project-template/internal"
 	"project-template/internal/controller"
+	"project-template/internal/controller/middleware"
 	"project-template/internal/repository"
 	"project-template/internal/usecase"
 )
@@ -31,7 +32,7 @@ func main() {
 	var env = internal.NewEnviroment()
 	defer env.Clear()
 
-	if err := env.Prepare(); err != nil {
+	if err := env.Prepare("./config.yaml"); err != nil {
 		return
 	}
 
@@ -44,11 +45,15 @@ func main() {
 	// HTTP
 	var router = gin.Default()
 
+	router.Use(middleware.MidRequestID())
+
 	// controller
 	controller.NewUserContoller(userCase).Route(router)
 
 	var app = bootstrap.New(
-		bootstrap.WithServers(http.NewServer(env.Config.HTTP.Addr, router)),
+		bootstrap.WithServers(
+			http.NewServer(env.Config.HTTP.Address(), router),
+		),
 	)
 
 	fmt.Println(app.Run())

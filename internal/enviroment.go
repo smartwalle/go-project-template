@@ -2,6 +2,8 @@ package internal
 
 import (
 	"github.com/smartwalle/dbs"
+	"gopkg.in/yaml.v3"
+	"os"
 )
 
 type Enviroment struct {
@@ -14,8 +16,17 @@ func NewEnviroment() *Enviroment {
 	return env
 }
 
-func (env *Enviroment) Prepare() (err error) {
+func (env *Enviroment) Prepare(configFilepath string) (err error) {
 	// 加载配置文件
+	file, err := os.Open(configFilepath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	if err = yaml.NewDecoder(file).Decode(&env.Config); err != nil {
+		return err
+	}
 
 	// 连接数据库
 	//env.DB, err = dbs.Open(
