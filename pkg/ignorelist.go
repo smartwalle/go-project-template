@@ -16,9 +16,9 @@ func NewIgnorelist(config []string) *Ignorelist {
 	}
 }
 
-// Exists 检查参数 uri 是否在名单中，是返回 true，否则返回 false。
-func (ignore *Ignorelist) Exists(uri string) bool {
-	value, found := ignore.cache.Load(uri)
+// Exists 检查参数 s 是否在名单中，在名单中返回 true，否则返回 false。
+func (ignore *Ignorelist) Exists(s string) bool {
+	value, found := ignore.cache.Load(s)
 	if found {
 		return value.(bool)
 	}
@@ -26,18 +26,18 @@ func (ignore *Ignorelist) Exists(uri string) bool {
 	var onlist = false
 	for _, v := range ignore.config {
 		if v[len(v)-1] == '*' {
-			if strings.HasPrefix(uri, v[0:len(v)-1]) {
+			if strings.HasPrefix(s, v[0:len(v)-1]) {
 				onlist = true
 				break
 			}
 		} else {
-			if uri == v {
+			if s == v {
 				onlist = true
 				break
 			}
 		}
 	}
-	ignore.cache.Store(uri, onlist)
+	ignore.cache.Store(s, onlist)
 	return onlist
 }
 
