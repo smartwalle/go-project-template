@@ -5,26 +5,26 @@ import (
 	"sync"
 )
 
-type Ignorelist struct {
+type Ignore struct {
 	config []string
 	cache  sync.Map
 }
 
-func NewIgnorelist(config []string) *Ignorelist {
-	return &Ignorelist{
+func NewIgnore(config []string) *Ignore {
+	return &Ignore{
 		config: config,
 	}
 }
 
 // Exists 检查参数 s 是否在名单中，在名单中返回 true，否则返回 false。
-func (ignore *Ignorelist) Exists(s string) bool {
-	value, found := ignore.cache.Load(s)
+func (ig *Ignore) Exists(s string) bool {
+	value, found := ig.cache.Load(s)
 	if found {
 		return value.(bool)
 	}
 
 	var onlist = false
-	for _, v := range ignore.config {
+	for _, v := range ig.config {
 		if v[len(v)-1] == '*' {
 			if strings.HasPrefix(s, v[0:len(v)-1]) {
 				onlist = true
@@ -37,10 +37,10 @@ func (ignore *Ignorelist) Exists(s string) bool {
 			}
 		}
 	}
-	ignore.cache.Store(s, onlist)
+	ig.cache.Store(s, onlist)
 	return onlist
 }
 
-func (ignore *Ignorelist) Config() []string {
-	return ignore.config
+func (ig *Ignore) Config() []string {
+	return ig.config
 }
