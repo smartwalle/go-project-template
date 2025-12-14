@@ -30,7 +30,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/smartwalle/bootstrap v0.0.0-20250415113422-412e56b0c92f // indirect
-	github.com/smartwalle/dbs v1.2.9-0.20250412015222-3d4ff6481870 // indirect
+	github.com/smartwalle/dbs v1.2.10-0.20251214031529-f542b542ebce // indirect
 	github.com/smartwalle/netx v0.0.0-20250414133353-d18544a37c1f // indirect
 	github.com/swaggo/swag v1.16.4 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect

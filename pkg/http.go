@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func HandlerWrapper(handler func(c *gin.Context) (interface{}, error)) func(*gin.Context) {
+func HandlerWrapper[T any](handler func(c *gin.Context) (T, error)) func(*gin.Context) {
 	return func(c *gin.Context) {
 		if handler != nil {
 			var data, err = handler(c)

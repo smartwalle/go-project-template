@@ -6,9 +6,9 @@ import (
 	"github.com/smartwalle/bootstrap"
 	"github.com/smartwalle/bootstrap/http"
 	"project-template/internal"
-	"project-template/internal/controller"
-	"project-template/internal/controller/middleware"
 	"project-template/internal/repository"
+	"project-template/internal/service"
+	"project-template/internal/service/middleware"
 	"project-template/internal/usecase"
 )
 
@@ -47,8 +47,8 @@ func main() {
 
 	router.Use(middleware.MidRequestID())
 
-	// controller
-	controller.NewUserContoller(userCase).Route(router)
+	// service
+	service.NewUserService(userCase).Route(router)
 
 	var app = bootstrap.New(
 		bootstrap.WithServers(

@@ -1,4 +1,4 @@
-package controller
+package service
 
 import (
 	"github.com/gin-gonic/gin"
@@ -7,17 +7,17 @@ import (
 	"project-template/pkg"
 )
 
-type UserController struct {
+type UserService struct {
 	userCase *usecase.UserUsecase
 }
 
-func NewUserContoller(userCase *usecase.UserUsecase) *UserController {
-	var userContoller = &UserController{}
+func NewUserService(userCase *usecase.UserUsecase) *UserService {
+	var userContoller = &UserService{}
 	userContoller.userCase = userCase
 	return userContoller
 }
 
-func (u *UserController) Route(r gin.IRouter) {
+func (u *UserService) Route(r gin.IRouter) {
 	r.GET("/testx", pkg.HandlerWrapper(u.Profile))
 }
 
@@ -33,6 +33,6 @@ func (u *UserController) Route(r gin.IRouter) {
 //	@Success		200		{object}	pkg.Response{data=domain.User}
 //	@Security		ApiKeyAuth
 //	@Router			/profile [get]
-func (u *UserController) Profile(c *gin.Context) (interface{}, error) {
+func (u *UserService) Profile(c *gin.Context) (domain.User, error) {
 	return domain.User{}, pkg.NewError(1000, "ssss")
 }

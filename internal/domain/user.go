@@ -1,16 +1,22 @@
 package domain
 
 import (
-	"context"
+	"github.com/smartwalle/dbs"
 )
 
 type User struct {
-	ID   int64  `sql:"id"`
+	ID   int64  `sql:"id,auto_increment"`
 	Name string `sql:"name"`
 }
 
-type UserRepository interface {
-	Create(ctx context.Context, user *User) (err error)
+func (User) TableName() string {
+	return "user"
+}
 
-	FindByID(ctx context.Context, id int64) (user *User, err error)
+func (User) PrimaryKey() string {
+	return "id"
+}
+
+type UserRepository interface {
+	dbs.Repositoy[User]
 }
