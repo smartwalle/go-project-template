@@ -1,19 +1,19 @@
-package pkg_test
+package tool_test
 
 import (
-	"project-template/pkg"
+	"project-template/internal/tool"
 	"testing"
 )
 
 func TestWhitelist(t *testing.T) {
-	var whitelist = pkg.NewIgnore([]string{"1", "2", "3"})
+	var whitelist = tool.NewIgnore([]string{"1", "2", "3"})
 	t.Log("在白名单上：", whitelist.Exists("1"))
 	t.Log("在白名单上：", whitelist.Exists("2"))
 	t.Log("在白名单上：", whitelist.Exists("4"))
 }
 
 func TestBlacklist(t *testing.T) {
-	var blacklist = pkg.NewIgnore([]string{"1", "2", "3"})
+	var blacklist = tool.NewIgnore([]string{"1", "2", "3"})
 	t.Log("在黑名单上：", blacklist.Exists("1"))
 	t.Log("在黑名单上：", blacklist.Exists("2"))
 	t.Log("在黑名单上：", blacklist.Exists("4"))

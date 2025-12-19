@@ -16,9 +16,9 @@ func NewEnviroment() *Enviroment {
 	return env
 }
 
-func (env *Enviroment) Prepare(configFilepath string) (err error) {
+func (env *Enviroment) Prepare(filepath string) (err error) {
 	// 加载配置文件
-	file, err := os.Open(configFilepath)
+	file, err := os.Open(filepath)
 	if err != nil {
 		return err
 	}

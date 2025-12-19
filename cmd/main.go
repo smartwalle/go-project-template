@@ -5,10 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/smartwalle/bootstrap"
 	"github.com/smartwalle/bootstrap/http"
+	"project-template/api/service"
+	"project-template/api/service/middleware"
 	"project-template/internal"
 	"project-template/internal/repository"
-	"project-template/internal/service"
-	"project-template/internal/service/middleware"
 	"project-template/internal/usecase"
 )
 
@@ -45,7 +45,7 @@ func main() {
 	// HTTP
 	var router = gin.Default()
 
-	router.Use(middleware.MidRequestID())
+	router.Use(middleware.MidRequestId())
 
 	// service
 	service.NewUserService(userCase).Route(router)

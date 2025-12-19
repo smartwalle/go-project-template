@@ -2,15 +2,15 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"project-template/pkg"
+	"project-template/internal/tool"
 )
 
 var (
-	AuthIgnore *pkg.Ignore // 不用校验登录状态的接口
+	AuthIgnore *tool.Ignore // 不用校验登录状态的接口
 )
 
 func init() {
-	AuthIgnore = pkg.NewIgnore([]string{
+	AuthIgnore = tool.NewIgnore([]string{
 		"/api/signin",
 		"/api/signup",
 	})

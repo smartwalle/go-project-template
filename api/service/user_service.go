@@ -2,9 +2,8 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
-	"project-template/internal/domain"
+	"project-template/internal/domain/vo"
 	"project-template/internal/usecase"
-	"project-template/pkg"
 )
 
 type UserService struct {
@@ -18,10 +17,10 @@ func NewUserService(userCase *usecase.UserUsecase) *UserService {
 }
 
 func (u *UserService) Route(r gin.IRouter) {
-	r.GET("/testx", pkg.HandlerWrapper(u.Profile))
+	r.GET("/profile", Handle(u.DescribeProfile))
 }
 
-// Profile 获取当前登录用户信息
+// DescribeProfile 获取当前登录用户信息
 //
 //	@Summary	获取当前登录用户信息
 //	@Schemes
@@ -29,10 +28,10 @@ func (u *UserService) Route(r gin.IRouter) {
 //	@Tags			user
 //	@Accept			json
 //	@Produce		json
-//	@Param			object	body		domain.User	true	"请求参数"
-//	@Success		200		{object}	pkg.Response{data=domain.User}
+//	@Param			object	body		vo.DescribeProfileRequest	true	"请求参数"
+//	@Success		200		{object}	vo.DescribeProfileResponse
 //	@Security		ApiKeyAuth
 //	@Router			/profile [get]
-func (u *UserService) Profile(c *gin.Context) (domain.User, error) {
-	return domain.User{}, pkg.NewError(1000, "ssss")
+func (u *UserService) DescribeProfile(c *gin.Context, req vo.DescribeProfileRequest) (vo.DescribeProfileResponse, error) {
+	return u.userCase.DescribeProfile(c, req)
 }
