@@ -2,15 +2,15 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"project-template/internal/tool"
+	"project-template/internal/pkg/ignore"
 )
 
 var (
-	AuthIgnore *tool.Ignore // 不用校验登录状态的接口
+	AuthIgnore *ignore.Ignore // 不用校验登录状态的接口
 )
 
 func init() {
-	AuthIgnore = tool.NewIgnore([]string{
+	AuthIgnore = ignore.New([]string{
 		"/api/signin",
 		"/api/signup",
 	})
@@ -19,7 +19,7 @@ func init() {
 func AuthCheck() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		// 请求接口在“不需要校验登录状态接口名单中”，则不进行登录状态的验证
-		if AuthIgnore.Exists(c.Request.URL.Path) {
+		if AuthIgnore.Match(c.Request.URL.Path) {
 			c.Next()
 			return
 		}

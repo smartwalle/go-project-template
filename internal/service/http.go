@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"project-template/internal/tool"
+	"project-template/internal/pkg"
 )
 
 type Request interface {
@@ -38,7 +38,7 @@ func Handle[T Request, R interface{}](handler func(c *gin.Context, req T) (R, er
 				var code = kDefaultErrorCode
 				var message = kDefaultErrorMessage
 
-				var rErr tool.Error
+				var rErr pkg.Error
 				if errors.As(err, &rErr) {
 					code = rErr.Code()
 					message = rErr.Message()
