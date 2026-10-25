@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"strings"
 
-	"project-template/internal/platform/database"
-	"project-template/internal/platform/logging"
+	"project-template/internal/foundation/database"
+	"project-template/internal/foundation/logging"
 	"project-template/internal/transport/http"
 )
 

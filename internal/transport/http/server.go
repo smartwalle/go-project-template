@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"project-template/internal/domain/userdomain"
-	"project-template/internal/platform/errors"
+	"project-template/internal/foundation/errors"
 	"project-template/internal/transport/http/handler"
 	"project-template/internal/transport/http/jsonrender"
 

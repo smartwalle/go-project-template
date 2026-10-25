@@ -13,7 +13,7 @@ import (
 	"github.com/smartwalle/rx/router"
 
 	"project-template/internal/domain/userdomain"
-	"project-template/internal/platform/errors"
+	"project-template/internal/foundation/errors"
 )
 
 // UserHandler 处理用户相关的 HTTP 请求。

@@ -7,8 +7,8 @@ import (
 	"errors"
 
 	"project-template/internal/config"
-	"project-template/internal/platform/database"
-	"project-template/internal/platform/logging"
+	"project-template/internal/foundation/database"
+	"project-template/internal/foundation/logging"
 
 	"github.com/smartwalle/dbs"
 )

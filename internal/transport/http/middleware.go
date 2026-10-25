@@ -6,7 +6,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"project-template/internal/platform/errors"
+	"project-template/internal/foundation/errors"
 	"project-template/internal/transport/http/jsonrender"
 
 	"github.com/smartwalle/rx"

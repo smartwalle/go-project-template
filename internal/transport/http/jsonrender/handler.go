@@ -12,7 +12,7 @@ import (
 
 	"github.com/smartwalle/rx"
 
-	"project-template/internal/platform/errors"
+	"project-template/internal/foundation/errors"
 )
 
 // HandleJSON 绑定请求体、调用业务函数并输出结果。

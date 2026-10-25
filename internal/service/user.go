@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"project-template/internal/domain/userdomain"
-	"project-template/internal/platform/errors"
+	"project-template/internal/foundation/errors"
 )
 
 // UserService 实现用户模块的业务用例。
