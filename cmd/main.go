@@ -1,60 +1,40 @@
+// Package main 是应用进程的入口：加载配置、准备运行环境、启动服务。
 package main
 
 import (
+	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/smartwalle/bootstrap"
-	"github.com/smartwalle/bootstrap/http"
-	"project-template/internal"
-	"project-template/internal/repository"
-	"project-template/internal/service"
-	"project-template/internal/service/middleware"
-	"project-template/internal/usecase"
+	"log/slog"
+	"os"
+
+	"project-template/internal/app"
+	"project-template/internal/config"
 )
 
-//	@Title			Project Name
-//	@Version		1.0
-//	@Description	This is a sample http server.
-
-//	@Contact.name	Swagger Doc
-//	@Contact.url	https://github.com/swaggo/swag/blob/master/README_zh-CN.md
-
-//	@Schemes	http
-//	@Host		localhost:8888
-//	@BasePath	/api
-
-//	@SecurityDefinitions.apikey	ApiKeyAuth
-//	@In							header
-//	@Name						Authorization
-
-// main
 func main() {
-	var env = internal.NewEnviroment()
-	defer env.Clear()
+	if err := run(); err != nil {
+		slog.Error("application failed", "error", err)
+		os.Exit(1)
+	}
+}
 
-	if err := env.Prepare("./config.yaml"); err != nil {
-		return
+// run 加载配置、准备运行环境并启动服务。
+//
+// 环境在这里创建并释放
+func run() error {
+	cfg, err := config.Load("config.yaml")
+	if err != nil {
+		return fmt.Errorf("load config: %w", err)
 	}
 
-	// repo
-	var userRepo = repository.NewUserRepository(env.DB)
+	env, err := app.Prepare(cfg)
+	if err != nil {
+		return fmt.Errorf("prepare environment: %w", err)
+	}
+	defer env.Clear()
 
-	// usecase
-	var userCase = usecase.NewUserUsecase(userRepo)
-
-	// HTTP
-	var router = gin.Default()
-
-	router.Use(middleware.MidRequestId())
-
-	// service
-	service.NewUserService(userCase).Route(router)
-
-	var app = bootstrap.New(
-		bootstrap.WithServers(
-			http.NewServer(env.Config.HTTP.Address(), router),
-		),
-	)
-
-	fmt.Println(app.Run())
+	if err = app.Run(context.Background(), env); err != nil {
+		return err
+	}
+	return nil
 }

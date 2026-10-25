@@ -16,3 +16,4 @@
 .idea
 logs*
 files
+config.yaml
