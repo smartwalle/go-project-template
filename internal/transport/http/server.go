@@ -35,7 +35,7 @@ type Server struct {
 func NewServer(config Config, userService userdomain.Service) *Server {
 	var engine = rx.New()
 	engine.Use(MidRecovery())
-	engine.Use(MidRequestID())
+	engine.Use(MidRequestId())
 	engine.Use(MidLogger())
 	engine.NoRoute(func(c *rx.Context) {
 		jsonrender.Error(c, http.StatusNotFound, jsonrender.CodeRouteNotFound, "route not found")
