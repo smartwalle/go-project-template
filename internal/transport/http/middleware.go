@@ -17,7 +17,7 @@ func MidRecovery() rx.HandlerFunc {
 	return func(c *rx.Context) {
 		defer func() {
 			if r := recover(); r != nil {
-				slog.Error("panic recovered", "panic", r, "stack", string(debug.Stack()))
+				slog.ErrorContext(c.Context(), "panic recovered", "panic", r, "stack", string(debug.Stack()))
 				c.AbortWithError(errors.New(errors.CodeInternalError, "internal server error"))
 			}
 		}()
@@ -30,7 +30,8 @@ func MidLogger() rx.HandlerFunc {
 	return func(c *rx.Context) {
 		var start = time.Now()
 		c.Next()
-		slog.Info("http request",
+		slog.InfoContext(c.Context(),
+			"http request",
 			"method", c.Request.Method,
 			"path", c.Request.URL.Path,
 			"status", c.Writer.Status(),

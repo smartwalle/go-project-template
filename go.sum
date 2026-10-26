@@ -4,6 +4,8 @@ github.com/smartwalle/bootstrap v0.0.4 h1:fwUFUTBhBiry6/9Evlh2f+DihkXI9K0JDYwXbx
 github.com/smartwalle/bootstrap v0.0.4/go.mod h1:osn3ROaLTw2P6CaL4XrVVoTlR89dTxZc8cLZ/SbMWWQ=
 github.com/smartwalle/dbs v1.2.16 h1:3TfaHsnna17L12bSMGcVAoVSXR2XAfP5JOceyNgVXuo=
 github.com/smartwalle/dbs v1.2.16/go.mod h1:hStfHL0ri/hYg1tqi2MpVhzBipUxeCmgxyMo4R1nKbY=
+github.com/smartwalle/logkit v0.0.0-20261012130630-9ac5de3cd624 h1:y0OR3XHziu9IbdVXS7AcvK2miM0fDC9lNhQwdi6pbRk=
+github.com/smartwalle/logkit v0.0.0-20261012130630-9ac5de3cd624/go.mod h1:KahTkZQC/gF+o1X1VYBnjA0oDdanZZ4hjy0H/EUrd/E=
 github.com/smartwalle/routine v0.0.1 h1:xUjt4Iemb7QzeIZcmTtvj5DEcGjgFp//Nj4+pvLzCEU=
 github.com/smartwalle/routine v0.0.1/go.mod h1:+ZjGuvKz/66z25IzjN0wIBvTN9b+2sf6vn9KFi1T4Zs=
 github.com/smartwalle/rx v0.0.6 h1:OiYZ4ZbF8iPOsDHhWihMYVA2rkXCeUT+suvs4GQ46Bo=

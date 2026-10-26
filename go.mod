@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/smartwalle/logkit v0.0.0-20261012130630-9ac5de3cd624 // indirect
 	github.com/smartwalle/routine v0.0.1 // indirect
 	gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 // indirect
 )

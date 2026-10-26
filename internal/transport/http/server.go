@@ -52,7 +52,7 @@ func NewServer(config Config, userService userdomain.Service) *Server {
 			return
 		}
 
-		slog.Error("handle http request failed", "error", err)
+		slog.ErrorContext(c.Context(), "handle http request failed", "error", err)
 		c.JSON(http.StatusInternalServerError, jsonrender.Response{Code: errors.CodeInternalError, Message: "internal server error"})
 	})
 
