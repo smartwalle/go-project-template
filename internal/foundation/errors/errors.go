@@ -80,9 +80,9 @@ func Forbidden(msg string) Error {
 	return New(CodeForbidden, msg)
 }
 
-// InternalError 表示服务端内部错误，调用方重试通常无法解决。
-func InternalError(msg string) Error {
-	return New(CodeInternalError, msg)
+// InternalServerError 表示服务端内部错误，调用方重试通常无法解决。
+func InternalServerError(msg string) Error {
+	return New(CodeInternalServerError, msg)
 }
 
 // TooManyRequests 表示请求过于频繁，调用方应降低请求速率后再试。
@@ -119,6 +119,6 @@ const (
 	// CodeTooManyRequests 表示请求过于频繁。
 	CodeTooManyRequests = "too_many_requests"
 
-	// CodeInternalError 表示服务端内部错误。
-	CodeInternalError = "internal_error"
+	// CodeInternalServerError 表示服务端内部错误。
+	CodeInternalServerError = "internal_server_error"
 )

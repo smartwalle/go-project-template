@@ -7,7 +7,7 @@ package handler
 import (
 	"strconv"
 
-	"project-template/internal/transport/http/jsonrender"
+	"project-template/internal/transport/http/jsoncodec"
 
 	"github.com/smartwalle/rx"
 	"github.com/smartwalle/rx/router"
@@ -32,13 +32,13 @@ func NewUserHandler(service userdomain.Service) *UserHandler {
 //
 // 路由前缀由 HTTP 层统一创建，Handler 只声明自己的资源路径。
 func (h *UserHandler) RegisterRoutes(r router.Router) {
-	r.GET("/users", jsonrender.HandleQuery(h.List))
-	r.POST("/users", jsonrender.HandleJSON(h.Create))
-	r.GET("/users/:id", jsonrender.HandleQuery(h.Get))
+	r.GET("/users", jsoncodec.Handler(h.List))
+	r.POST("/users", jsoncodec.Handler(h.Create))
+	r.GET("/users/:id", jsoncodec.Handler(h.Get))
 }
 
 // List 返回用户列表。
-func (h *UserHandler) List(c *rx.Context) ([]*userdomain.User, error) {
+func (h *UserHandler) List(c *rx.Context, _ struct{}) ([]*userdomain.User, error) {
 	return h.service.List(c.Context())
 }
 
@@ -48,7 +48,7 @@ func (h *UserHandler) Create(c *rx.Context, req userdomain.CreateRequest) (*user
 }
 
 // Get 按 Id 返回用户。
-func (h *UserHandler) Get(c *rx.Context) (*userdomain.User, error) {
+func (h *UserHandler) Get(c *rx.Context, _ struct{}) (*userdomain.User, error) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil || id <= 0 {
 		return nil, errors.InvalidArgument("id must be a positive integer")

@@ -3,7 +3,7 @@ package handler
 import (
 	"time"
 
-	"project-template/internal/transport/http/jsonrender"
+	"project-template/internal/transport/http/jsoncodec"
 
 	"github.com/smartwalle/rx"
 	"github.com/smartwalle/rx/router"
@@ -20,11 +20,11 @@ func NewHealthHandler() *HealthHandler {
 
 // RegisterRoutes 声明本 HealthHandler 负责的路由。
 func (h *HealthHandler) RegisterRoutes(r router.Router) {
-	r.GET("/health", jsonrender.HandleQuery(h.Health))
+	r.GET("/health", jsoncodec.Handler(h.Health))
 }
 
 // Health 返回服务状态。
-func (h *HealthHandler) Health(c *rx.Context) (*Health, error) {
+func (h *HealthHandler) Health(c *rx.Context, _ struct{}) (*Health, error) {
 	return &Health{Status: "ok", Time: time.Now().UTC().Format(time.RFC3339)}, nil
 }
 

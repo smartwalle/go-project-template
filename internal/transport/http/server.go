@@ -10,12 +10,12 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"project-template/internal/transport/http/jsoncodec"
 	"time"
 
 	"project-template/internal/domain/userdomain"
 	"project-template/internal/foundation/errors"
 	"project-template/internal/transport/http/handler"
-	"project-template/internal/transport/http/jsonrender"
 
 	"github.com/smartwalle/rx"
 	"github.com/smartwalle/rx/router"
@@ -38,23 +38,9 @@ func NewServer(config Config, userService userdomain.Service) *Server {
 	engine.Use(MidRequestId())
 	engine.Use(MidLogger())
 	engine.NoRoute(func(c *rx.Context) {
-		c.AbortWithError(errors.New(jsonrender.CodeRouteNotFound, "route not found"))
+		c.AbortWithError(errors.NotFound("route not found"))
 	})
-	engine.HandleError(func(c *rx.Context, err error) {
-		var nErr errors.Error
-		if errors.As(err, &nErr) {
-			switch nErr.Code() {
-			case jsonrender.CodeRouteNotFound:
-				c.JSON(http.StatusNotFound, jsonrender.Response{Code: nErr.Code(), Message: nErr.Message()})
-			default:
-				c.JSON(http.StatusBadRequest, jsonrender.Response{Code: nErr.Code(), Message: nErr.Message()})
-			}
-			return
-		}
-
-		slog.ErrorContext(c.Context(), "handle http request failed", "error", err)
-		c.JSON(http.StatusInternalServerError, jsonrender.Response{Code: errors.CodeInternalError, Message: "internal server error"})
-	})
+	engine.UseErrorEncoder(jsoncodec.ErrorEncoder())
 
 	// 新增业务接口时，在这里注册对应的 Handler。
 	var r = router.New()

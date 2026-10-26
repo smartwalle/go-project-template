@@ -18,7 +18,7 @@ func MidRecovery() rx.HandlerFunc {
 		defer func() {
 			if r := recover(); r != nil {
 				slog.ErrorContext(c.Context(), "panic recovered", "panic", r, "stack", string(debug.Stack()))
-				c.AbortWithError(errors.New(errors.CodeInternalError, "internal server error"))
+				c.AbortWithError(errors.New(errors.CodeInternalServerError, "internal server error"))
 			}
 		}()
 		c.Next()
