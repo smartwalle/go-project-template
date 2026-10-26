@@ -7,7 +7,6 @@ package jsonrender
 import (
 	"encoding/json"
 	"io"
-	"log/slog"
 	"net/http"
 
 	"github.com/smartwalle/rx"
@@ -23,13 +22,13 @@ func HandleJSON[T any, R any](fn func(c *rx.Context, req T) (R, error)) rx.Handl
 	return func(c *rx.Context) {
 		var req T
 		if err := bindJSON(c, &req); err != nil {
-			Error(c, http.StatusBadRequest, CodeInvalidJSON, "request body must be valid JSON")
+			c.AbortWithError(errors.New(CodeInvalidJSON, "request body must be valid JSON"))
 			return
 		}
 
 		var data, err = fn(c, req)
 		if err != nil {
-			writeError(c, err)
+			c.AbortWithError(err)
 			return
 		}
 		Success(c, http.StatusOK, "", "", data)
@@ -41,7 +40,7 @@ func HandleQuery[R any](fn func(c *rx.Context) (R, error)) rx.HandlerFunc {
 	return func(c *rx.Context) {
 		var data, err = fn(c)
 		if err != nil {
-			writeError(c, err)
+			c.AbortWithError(err)
 			return
 		}
 		Success(c, http.StatusOK, "", "", data)
@@ -58,19 +57,4 @@ func bindJSON(c *rx.Context, req any) error {
 	}()
 
 	return json.NewDecoder(c.Request.Body).Decode(req)
-}
-
-// writeError 把错误映射为 HTTP 状态码。
-//
-// 业务错误用 code 表达语义：错误码原样返回给客户端；
-// 未识别的错误统一按内部错误处理，底层信息不会返回给客户端。
-func writeError(c *rx.Context, err error) {
-	var nErr errors.Error
-	if errors.As(err, &nErr) {
-		Error(c, http.StatusBadRequest, nErr.Code(), nErr.Message())
-		return
-	}
-
-	slog.Error("handle http request failed", "error", err)
-	Error(c, http.StatusInternalServerError, errors.CodeInternalError, "internal server error")
 }

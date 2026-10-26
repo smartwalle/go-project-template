@@ -38,7 +38,22 @@ func NewServer(config Config, userService userdomain.Service) *Server {
 	engine.Use(MidRequestId())
 	engine.Use(MidLogger())
 	engine.NoRoute(func(c *rx.Context) {
-		jsonrender.Error(c, http.StatusNotFound, jsonrender.CodeRouteNotFound, "route not found")
+		c.AbortWithError(errors.New(jsonrender.CodeRouteNotFound, "route not found"))
+	})
+	engine.HandleError(func(c *rx.Context, err error) {
+		var nErr errors.Error
+		if errors.As(err, &nErr) {
+			switch nErr.Code() {
+			case jsonrender.CodeRouteNotFound:
+				c.JSON(http.StatusNotFound, jsonrender.Response{Code: nErr.Code(), Message: nErr.Message()})
+			default:
+				c.JSON(http.StatusBadRequest, jsonrender.Response{Code: nErr.Code(), Message: nErr.Message()})
+			}
+			return
+		}
+
+		slog.Error("handle http request failed", "error", err)
+		c.JSON(http.StatusInternalServerError, jsonrender.Response{Code: errors.CodeInternalError, Message: "internal server error"})
 	})
 
 	// 新增业务接口时，在这里注册对应的 Handler。

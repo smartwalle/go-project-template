@@ -2,13 +2,11 @@ package http
 
 import (
 	"log/slog"
-	"net/http"
 	"runtime/debug"
 	"time"
 	"uuid"
 
 	"project-template/internal/foundation/errors"
-	"project-template/internal/transport/http/jsonrender"
 
 	"github.com/smartwalle/rx"
 )
@@ -19,7 +17,7 @@ func MidRecovery() rx.HandlerFunc {
 		defer func() {
 			if r := recover(); r != nil {
 				slog.Error("panic recovered", "panic", r, "stack", string(debug.Stack()))
-				jsonrender.Error(c, http.StatusInternalServerError, errors.CodeInternalError, "internal server error")
+				c.AbortWithError(errors.New(errors.CodeInternalError, "internal server error"))
 			}
 		}()
 		c.Next()

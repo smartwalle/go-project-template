@@ -29,8 +29,3 @@ type Response struct {
 func Success(c *rx.Context, status int, code, message string, data any) {
 	c.JSON(status, Response{Code: code, Message: message, Data: data})
 }
-
-// Error 写出失败响应。
-func Error(c *rx.Context, status int, code string, message string) {
-	c.JSON(status, Response{Code: code, Message: message})
-}
