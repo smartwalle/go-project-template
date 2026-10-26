@@ -33,5 +33,5 @@ func (DBLogger) Trace(ctx context.Context, depth int, begin time.Time, sql strin
 
 	var record = slog.NewRecord(time.Now(), level, msg, pc)
 	record.Add(attrs...)
-	slog.Default().Handler().Handle(ctx, record)
+	_ = slog.Default().Handler().Handle(ctx, record)
 }

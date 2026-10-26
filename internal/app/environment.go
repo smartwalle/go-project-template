@@ -72,6 +72,8 @@ func (env *Environment) initDatabase() error {
 // Clear 释放应用占用的资源。
 func (env *Environment) Clear() {
 	if env.Database != nil {
-		env.Database.Close()
+		if err := env.Database.Close(); err != nil {
+			slog.Error("数据库关闭异常", slog.Any("error", err))
+		}
 	}
 }
