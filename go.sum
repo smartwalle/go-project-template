@@ -8,6 +8,8 @@ github.com/smartwalle/routine v0.0.1 h1:xUjt4Iemb7QzeIZcmTtvj5DEcGjgFp//Nj4+pvLz
 github.com/smartwalle/routine v0.0.1/go.mod h1:+ZjGuvKz/66z25IzjN0wIBvTN9b+2sf6vn9KFi1T4Zs=
 github.com/smartwalle/rx v0.0.6 h1:OiYZ4ZbF8iPOsDHhWihMYVA2rkXCeUT+suvs4GQ46Bo=
 github.com/smartwalle/rx v0.0.6/go.mod h1:VesZY60Ir+JDQwLtI5dC6x4bQfyMZgl5hHi5npEEwyI=
+github.com/smartwalle/rx v0.0.7 h1:TgRyiD4ZVFKtBqpSl7AcsJY6pVgp8waDz1eGnl4fKr8=
+github.com/smartwalle/rx v0.0.7/go.mod h1:PKsRmPeaiTcoUKa2o3yyf3Rbz2A/w+fjQ10tJVpFaJ8=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=

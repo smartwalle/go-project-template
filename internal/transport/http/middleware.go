@@ -2,6 +2,7 @@ package http
 
 import (
 	"log/slog"
+	"project-template/internal/foundation/metadata"
 	"runtime/debug"
 	"time"
 	"uuid"
@@ -52,6 +53,9 @@ func MidRequestId() rx.HandlerFunc {
 			rid = uuid.New().String()
 		}
 		c.Writer.Header().Set(HeaderRequestId, rid)
+
+		c.UseContext(metadata.WithRequestId(c.Context(), rid))
+
 		c.Next()
 	}
 }

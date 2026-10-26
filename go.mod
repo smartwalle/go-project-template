@@ -6,7 +6,7 @@ require (
 	github.com/lib/pq v1.12.3
 	github.com/smartwalle/bootstrap v0.0.4
 	github.com/smartwalle/dbs v1.2.16
-	github.com/smartwalle/rx v0.0.6
+	github.com/smartwalle/rx v0.0.7
 	gopkg.in/yaml.v3 v3.0.1
 )
 
