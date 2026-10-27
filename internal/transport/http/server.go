@@ -65,13 +65,14 @@ func NewServer(config Config, userService userdomain.Service) *Server {
 func (s *Server) Start(ctx context.Context) error {
 	listener, err := net.Listen("tcp", s.config.Address)
 	if err != nil {
+		slog.InfoContext(ctx, "HTTP 服务监听失败", slog.Any("error", err))
 		return fmt.Errorf("listen on %s: %w", s.config.Address, err)
 	}
 	// 请求的 ctx 不跟随生命周期 ctx 取消：收到停止信号后，在途请求仍要跑完。
 	s.server.BaseContext = func(net.Listener) context.Context {
 		return context.WithoutCancel(ctx)
 	}
-	slog.InfoContext(ctx, "HTTP 服务开始监听", slog.String("address", listener.Addr().String()))
+	slog.InfoContext(ctx, "HTTP 服务开始运行", slog.String("address", listener.Addr().String()))
 	if err = s.server.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		slog.ErrorContext(ctx, "HTTP 服务运行失败", slog.Any("error", err))
 		return fmt.Errorf("serve http: %w", err)
