@@ -65,7 +65,7 @@ func NewServer(config Config, userService userdomain.Service) *Server {
 func (s *Server) Start(ctx context.Context) error {
 	listener, err := net.Listen("tcp", s.config.Address)
 	if err != nil {
-		slog.InfoContext(ctx, "HTTP 服务监听失败", slog.Any("error", err))
+		slog.ErrorContext(ctx, "HTTP 服务监听失败", slog.Any("error", err))
 		return fmt.Errorf("listen on %s: %w", s.config.Address, err)
 	}
 	// 请求的 ctx 不跟随生命周期 ctx 取消：收到停止信号后，在途请求仍要跑完。
