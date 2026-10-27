@@ -65,3 +65,9 @@ func ErrorEncoder() rx.ErrorEncoder {
 		c.JSON(http.StatusInternalServerError, Response{Code: errors.CodeInternalServerError, Message: "internal server error"})
 	}
 }
+
+func NotFoundHandler() rx.HandlerFunc {
+	return func(c *rx.Context) {
+		c.AbortWithError(errors.NotFound("route not found"))
+	}
+}

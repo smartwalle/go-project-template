@@ -37,10 +37,8 @@ func NewServer(config Config, userService userdomain.Service) *Server {
 	engine.Use(MidRecovery())
 	engine.Use(MidRequestId())
 	engine.Use(MidLogger())
-	engine.NoRoute(func(c *rx.Context) {
-		c.AbortWithError(errors.NotFound("route not found"))
-	})
 	engine.UseErrorEncoder(jsoncodec.ErrorEncoder())
+	engine.UseNotFoundHandler(jsoncodec.NotFoundHandler())
 
 	// 新增业务接口时，在这里注册对应的 Handler。
 	var r = router.New()
