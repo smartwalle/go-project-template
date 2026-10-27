@@ -10,12 +10,10 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
-	"project-template/internal/transport/http/jsoncodec"
-	"time"
-
 	"project-template/internal/domain/userdomain"
 	"project-template/internal/foundation/errors"
 	"project-template/internal/transport/http/handler"
+	"project-template/internal/transport/http/jsoncodec"
 
 	"github.com/smartwalle/rx"
 	"github.com/smartwalle/rx/router"
@@ -87,21 +85,10 @@ func (s *Server) Start(ctx context.Context) error {
 func (s *Server) Stop(ctx context.Context) error {
 	slog.InfoContext(ctx, "HTTP 服务开始关闭")
 
-	shutdownCtx, cancel := context.WithTimeout(ctx, s.ShutdownTimeout())
-	defer cancel()
-
-	if err := s.server.Shutdown(shutdownCtx); err != nil {
+	if err := s.server.Shutdown(ctx); err != nil {
 		slog.ErrorContext(ctx, "HTTP 服务关闭失败", slog.Any("error", err))
 		return fmt.Errorf("shutdown http server: %w", err)
 	}
 	slog.InfoContext(ctx, "HTTP 服务关闭完成")
 	return nil
-}
-
-// ShutdownTimeout 返回优雅关闭的等待上限，也就是排空在途请求的最长时间。
-func (s *Server) ShutdownTimeout() time.Duration {
-	if s.config.ShutdownTimeout > 0 {
-		return s.config.ShutdownTimeout
-	}
-	return defaultShutdownTimeout
 }

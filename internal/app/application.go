@@ -35,9 +35,7 @@ func Run(ctx context.Context, env *Environment) error {
 	var application = bootstrap.New(
 		bootstrap.WithContext(ctx),
 		bootstrap.WithServers(server),
-		// 停机时限取所有服务中最长的排空时限：框架的停机期限由所有服务共用，
-		// 新增服务时，这里要改成取各服务排空时限的最大值。
-		bootstrap.WithStopTimeout(server.ShutdownTimeout()),
+		bootstrap.WithStopTimeout(env.Config.App.ShutdownTimeout),
 	)
 
 	if err := application.Run(); err != nil {

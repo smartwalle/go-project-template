@@ -7,6 +7,7 @@ package config
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"project-template/internal/foundation/database"
 	"project-template/internal/foundation/logging"
@@ -35,6 +36,9 @@ type AppConfig struct {
 
 	// Environment 是运行环境，例如 development、test、production。
 	Environment string `yaml:"environment"`
+
+	// ShutdownTimeout 是优雅关闭的最长等待时间。
+	ShutdownTimeout time.Duration `yaml:"shutdown_timeout"`
 }
 
 // Validate 校验配置：应用自身的字段在这里校验，各模块的配置由模块自己校验。
@@ -44,6 +48,9 @@ func (c Config) Validate() error {
 	}
 	if strings.TrimSpace(c.App.Environment) == "" {
 		return fmt.Errorf("app.environment is required")
+	}
+	if c.App.ShutdownTimeout <= 0 {
+		return fmt.Errorf("app.shutdown_timeout must be positive")
 	}
 	if err := c.Logging.Validate(); err != nil {
 		return err
