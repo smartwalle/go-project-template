@@ -73,7 +73,9 @@ func (s *Server) Start(ctx context.Context) error {
 	s.server.BaseContext = func(net.Listener) context.Context {
 		return context.WithoutCancel(ctx)
 	}
+	slog.InfoContext(ctx, "HTTP 服务开始监听", slog.String("address", listener.Addr().String()))
 	if err = s.server.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		slog.ErrorContext(ctx, "HTTP 服务运行失败", slog.Any("error", err))
 		return fmt.Errorf("serve http: %w", err)
 	}
 	return nil
@@ -83,12 +85,12 @@ func (s *Server) Start(ctx context.Context) error {
 //
 // 等待上限由调用方给的期限决定，到点后仍未结束的请求会被中断。
 func (s *Server) Stop(ctx context.Context) error {
+	slog.InfoContext(ctx, "HTTP 服务开始关闭")
 	if err := s.server.Shutdown(ctx); err != nil {
-		if errors.Is(err, context.DeadlineExceeded) {
-			slog.Warn("http graceful shutdown timed out", "timeout", s.ShutdownTimeout())
-		}
+		slog.ErrorContext(ctx, "HTTP 服务关闭失败", slog.Any("error", err))
 		return fmt.Errorf("shutdown http server: %w", err)
 	}
+	slog.InfoContext(ctx, "HTTP 服务关闭完成")
 	return nil
 }
 

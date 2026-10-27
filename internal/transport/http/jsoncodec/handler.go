@@ -7,6 +7,7 @@ package jsoncodec
 import (
 	"encoding/json"
 	"io"
+	"log/slog"
 	"net/http"
 	"project-template/internal/foundation/errors"
 
@@ -54,6 +55,12 @@ func decode(c *rx.Context, req any) error {
 // ErrorEncoder 错误编码器
 func ErrorEncoder() rx.ErrorEncoder {
 	return func(c *rx.Context, err error) {
+		slog.ErrorContext(c.Context(), "请求处理失败",
+			slog.String("method", c.Request.Method),
+			slog.String("path", c.Request.URL.Path),
+			slog.Any("error", err),
+		)
+
 		// 业务错误统一处理
 		var nErr errors.Error
 		if errors.As(err, &nErr) {

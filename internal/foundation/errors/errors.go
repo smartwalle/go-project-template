@@ -24,7 +24,7 @@ func New(code string, message string) Error {
 }
 
 func (err Error) Error() string {
-	return strings.Join([]string{err.code, err.message}, "-")
+	return strings.Join([]string{err.code, err.message}, " - ")
 }
 
 func (err Error) Code() string {
