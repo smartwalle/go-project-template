@@ -13,6 +13,9 @@ type CreateRequest struct {
 
 // Service 是用户模块的业务契约，每个方法是一个业务用例。
 //
+// 用例返回对外模型 User，不返回实体 UserEntity：
+// Entity 对应数据库结构，不直接暴露给调用方，由实现层转换成模型再返回。
+//
 // 实现由 internal/service 提供，在应用组装层注入。
 type Service interface {
 	// List 返回全部用户。

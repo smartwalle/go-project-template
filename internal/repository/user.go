@@ -13,10 +13,10 @@ import (
 //
 // 错误原样返回，不做包装、不做转换。
 type UserRepository struct {
-	dbs.Repository[userdomain.User]
+	dbs.Repository[userdomain.UserEntity]
 }
 
 // NewUserRepository 创建仓储。db 由应用组装层统一持有和关闭。
 func NewUserRepository(db dbs.Database) *UserRepository {
-	return &UserRepository{dbs.NewRepository[userdomain.User](db)}
+	return &UserRepository{dbs.NewRepository[userdomain.UserEntity](db)}
 }

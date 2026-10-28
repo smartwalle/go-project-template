@@ -25,11 +25,11 @@ func NewUserService(repo userdomain.Repository) *UserService {
 
 // List 返回全部用户。
 func (s *UserService) List(ctx context.Context) ([]*userdomain.User, error) {
-	users, err := s.userRepo.FindList(ctx, "*", "id > ?", 0)
+	entities, err := s.userRepo.FindList(ctx, "*", "id > ?", 0)
 	if err != nil {
 		return nil, fmt.Errorf("list users: %w", err)
 	}
-	return users, nil
+	return toModels(entities), nil
 }
 
 // Get 按 Id 返回用户。用户不存在时返回 userdomain.ErrNotFound。
@@ -45,7 +45,7 @@ func (s *UserService) Get(ctx context.Context, id int64) (*userdomain.User, erro
 	if user == nil {
 		return nil, userdomain.ErrNotFound
 	}
-	return user, nil
+	return toModel(user), nil
 }
 
 // Create 创建用户。
@@ -74,7 +74,7 @@ func (s *UserService) Create(ctx context.Context, req userdomain.CreateRequest) 
 	}
 
 	// Id 留空，由数据库生成。
-	entity := &userdomain.User{
+	entity := &userdomain.UserEntity{
 		Name:      name,
 		Email:     email,
 		CreatedAt: time.Now(),
@@ -92,5 +92,32 @@ func (s *UserService) Create(ctx context.Context, req userdomain.CreateRequest) 
 	if created == nil {
 		return nil, userdomain.ErrNotFound
 	}
-	return created, nil
+	return toModel(created), nil
+}
+
+// toModel 把实体转换成对外模型。
+//
+// Entity 对应数据库结构，不直接对外输出，只在这里转换成模型。
+func toModel(entity *userdomain.UserEntity) *userdomain.User {
+	if entity == nil {
+		return nil
+	}
+	return &userdomain.User{
+		Id:        entity.Id,
+		Name:      entity.Name,
+		Email:     entity.Email,
+		CreatedAt: entity.CreatedAt,
+	}
+}
+
+// toModels 批量把实体转换成对外模型。
+func toModels(entities []*userdomain.UserEntity) []*userdomain.User {
+	if entities == nil {
+		return nil
+	}
+	var models = make([]*userdomain.User, 0, len(entities))
+	for _, entity := range entities {
+		models = append(models, toModel(entity))
+	}
+	return models
 }

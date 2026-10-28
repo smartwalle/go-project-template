@@ -5,11 +5,14 @@ package userdomain
 
 import "time"
 
-// User 是用户领域实体。
+// UserEntity 是 users 表对应的实体。
+//
+// 命名规则：每张数据库表对应一个 Entity 结构体，名称是表名的驼峰形式加 Entity 后缀，
+// 例如 users 表对应 UserEntity。
 //
 // sql tag 对应 users 表的列名，json tag 对应 JSON 序列化时的字段名；
 // TableName 与 PrimaryKey 让它满足 dbs.Entity。
-type User struct {
+type UserEntity struct {
 	// Id 是用户的业务标识，由数据库生成（default：留空时用数据库的默认值）。
 	Id int64 `sql:"id;default" json:"id"`
 
@@ -24,11 +27,11 @@ type User struct {
 }
 
 // TableName 是 users 表名，供 dbs 的通用 Repository 使用。
-func (User) TableName() string {
+func (UserEntity) TableName() string {
 	return "users"
 }
 
 // PrimaryKey 是主键列名，供 dbs 的通用 Repository 使用。
-func (User) PrimaryKey() string {
+func (UserEntity) PrimaryKey() string {
 	return "id"
 }
