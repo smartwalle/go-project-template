@@ -6,12 +6,12 @@ require (
 	github.com/lib/pq v1.12.3
 	github.com/smartwalle/bootstrap v0.0.4
 	github.com/smartwalle/dbs v1.2.16
+	github.com/smartwalle/logkit v0.0.0-20261012130630-9ac5de3cd624
 	github.com/smartwalle/rx v0.0.8
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	github.com/smartwalle/logkit v0.0.0-20261012130630-9ac5de3cd624 // indirect
 	github.com/smartwalle/routine v0.0.1 // indirect
 	gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 // indirect
 )
