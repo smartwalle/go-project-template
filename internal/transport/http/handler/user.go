@@ -43,7 +43,7 @@ func (h *UserHandler) List(c *rx.Context, _ struct{}) ([]*userdomain.User, error
 }
 
 // Create 创建用户。
-func (h *UserHandler) Create(c *rx.Context, req userdomain.CreateRequest) (*userdomain.User, error) {
+func (h *UserHandler) Create(c *rx.Context, req *userdomain.CreateRequest) (*userdomain.User, error) {
 	return h.service.Create(c.Context(), req)
 }
 

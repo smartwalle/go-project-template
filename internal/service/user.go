@@ -6,7 +6,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
 	"project-template/internal/domain/userdomain"
@@ -50,33 +49,28 @@ func (s *UserService) Get(ctx context.Context, id int64) (*userdomain.User, erro
 
 // Create 创建用户。
 //
+// 参数校验由 Request.Validate 完成，这里在用例入口处调用它；
+// 校验通过后请求里的字段已经是规范化后的值，直接使用。
+//
 // 邮箱唯一性最终由数据库的唯一约束保证：这里的前置查询只是为了给出更友好的错误。
-func (s *UserService) Create(ctx context.Context, req userdomain.CreateRequest) (*userdomain.User, error) {
-	name := strings.TrimSpace(req.Name)
-	email := strings.TrimSpace(req.Email)
-
-	if name == "" {
-		return nil, errors.MissingArgument("name is required")
-	}
-	if email == "" {
-		return nil, errors.MissingArgument("email is required")
-	}
-	if !strings.Contains(email, "@") {
-		return nil, errors.InvalidArgument(fmt.Sprintf("email %q is not a valid address", email))
+func (s *UserService) Create(ctx context.Context, req *userdomain.CreateRequest) (*userdomain.User, error) {
+	// Validate 保证了请求非空，校验通过后直接用请求里的字段。
+	if err := req.Validate(); err != nil {
+		return nil, err
 	}
 
-	existing, err := s.userRepo.FindOne(ctx, "*", "email = ?", email)
+	existing, err := s.userRepo.FindOne(ctx, "*", "email = ?", req.Email)
 	if err != nil {
 		return nil, fmt.Errorf("look up user by email: %w", err)
 	}
 	if existing != nil {
-		return nil, errors.AlreadyExists(fmt.Sprintf("email %q", email))
+		return nil, errors.AlreadyExists(fmt.Sprintf("email %q", req.Email))
 	}
 
 	// Id 留空，由数据库生成。
 	entity := &userdomain.UserEntity{
-		Name:      name,
-		Email:     email,
+		Name:      req.Name,
+		Email:     req.Email,
 		CreatedAt: time.Now(),
 	}
 	if _, err = s.userRepo.Create(ctx, entity); err != nil {
@@ -85,7 +79,7 @@ func (s *UserService) Create(ctx context.Context, req userdomain.CreateRequest) 
 
 	// dbs 的 Create 只返回 Result，而 PostgreSQL 驱动不支持 LastInsertId，
 	// 拿不到数据库生成的 Id，这里回查一次。
-	created, err := s.userRepo.FindOne(ctx, "*", "email = ?", email)
+	created, err := s.userRepo.FindOne(ctx, "*", "email = ?", req.Email)
 	if err != nil {
 		return nil, err
 	}
