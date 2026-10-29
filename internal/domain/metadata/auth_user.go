@@ -9,7 +9,7 @@ import (
 // authUserKey 是承载当前登录用户信息的 context 键类型。
 //
 // 用途：HTTP 中间件鉴权通过后，把当前登录用户写进 Context，
-// 后续业务代码用 AuthUser 读取，
+// 后续业务代码用 AuthUserFrom 读取，
 // 不必把用户信息一层层往下传。
 //
 // 使用私有空结构体作为键，与其它包的键互不冲突。

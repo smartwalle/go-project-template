@@ -3,10 +3,6 @@ package userdomain
 import "time"
 
 // User 是用户模块的模型。
-//
-// Model 是用来整理、组合数据的结构体，不绑定数据库表。
-//
-// 标识符规则：模型里的标识符字段类型与实体保持一致，统一使用 uint64。
 type User struct {
 	// Id 是用户的业务标识。
 	Id uint64 `json:"id"`

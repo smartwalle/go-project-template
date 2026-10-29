@@ -26,11 +26,11 @@ func Run(ctx context.Context, env *Environment) error {
 	var userService = service.NewUserService(userRepo)
 
 	// HTTP 服务的监听与启停由传输层的 Server 管理，应用层只负责把它注册到生命周期框架。
-	var server = http.NewServer(env.Config.HTTP, userService)
+	var httpServer = http.NewServer(env.Config.HTTP, userService)
 
 	var application = bootstrap.New(
 		bootstrap.WithContext(ctx),
-		bootstrap.WithServers(server),
+		bootstrap.WithServers(httpServer),
 		bootstrap.WithStopTimeout(env.Config.App.ShutdownTimeout),
 	)
 

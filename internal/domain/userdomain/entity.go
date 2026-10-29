@@ -8,11 +8,12 @@ import (
 
 // UserEntity 是 users 表对应的实体。
 //
-// 命名规则：每张数据库表对应一个 Entity 结构体，名称是表名的驼峰形式加 Entity 后缀。
+// 命名规则：每张数据库表对应一个 Entity 结构体，名称是表名的驼峰形式加 Entity 后缀，
+// 例如 users 表对应 UserEntity。
 //
 // 标识符规则：实体的标识符字段类型统一使用 uint64。
 //
-// sql tag 对应 users 表的列名，json tag 对应 JSON 序列化时的字段名；
+// sql tag 对应 users 表的列名，json tag 是 JSON 序列化时的字段名；
 // TableName 与 PrimaryKey 让它满足 dbs.Entity。
 type UserEntity struct {
 	// Id 是用户的业务标识，由数据库生成（default：留空时用数据库的默认值）。
