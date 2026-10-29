@@ -35,11 +35,12 @@ func (h *UserHandler) RegisterRoutes(r router.Router) {
 	r.GET("/users", jsoncodec.Handler(h.List))
 	r.POST("/users", jsoncodec.Handler(h.Create))
 	r.GET("/users/:id", jsoncodec.Handler(h.Get))
+	r.PUT("/users/:id", jsoncodec.Handler(h.Update))
 }
 
 // List 返回用户列表。
-func (h *UserHandler) List(c *rx.Context, _ struct{}) ([]*userdomain.User, error) {
-	return h.service.List(c.Context())
+func (h *UserHandler) List(c *rx.Context, _ struct{}) (*userdomain.ListResponse, error) {
+	return h.service.List(c.Context(), &userdomain.ListRequest{})
 }
 
 // Create 创建用户。
@@ -49,9 +50,32 @@ func (h *UserHandler) Create(c *rx.Context, req *userdomain.CreateRequest) (*use
 
 // Get 按 Id 返回用户。
 func (h *UserHandler) Get(c *rx.Context, _ struct{}) (*userdomain.User, error) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil || id <= 0 {
-		return nil, errors.InvalidArgument("id must be a positive integer")
+	id, err := parseId(c)
+	if err != nil {
+		return nil, err
 	}
 	return h.service.Get(c.Context(), id)
+}
+
+// Update 更新用户信息。
+func (h *UserHandler) Update(c *rx.Context, req *userdomain.UpdateRequest) (*userdomain.User, error) {
+	id, err := parseId(c)
+	if err != nil {
+		return nil, err
+	}
+	if req == nil {
+		return nil, errors.MissingArgument("request is required")
+	}
+	// id 只来自路径参数，请求体里不带。
+	req.Id = id
+	return h.service.Update(c.Context(), req)
+}
+
+// parseId 解析路径里的用户标识。
+func parseId(c *rx.Context) (uint64, error) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil || id == 0 {
+		return 0, errors.InvalidArgument("id must be a positive integer")
+	}
+	return id, nil
 }

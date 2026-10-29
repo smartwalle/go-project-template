@@ -37,8 +37,14 @@ func Handler[T any, R any](fn func(c *rx.Context, req T) (R, error)) rx.HandlerF
 	}
 }
 
+// decode 绑定请求体。
+//
+// 只有带请求体的方法才解码：POST、PUT、PATCH。
+// 其它方法的请求参数为空，不解码。
 func decode(c *rx.Context, req any) error {
-	if c.Request.Method != http.MethodPost {
+	switch c.Request.Method {
+	case http.MethodPost, http.MethodPut, http.MethodPatch:
+	default:
 		return nil
 	}
 

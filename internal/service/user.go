@@ -1,6 +1,10 @@
 // Package service 实现业务用例。
 //
 // 每个业务模块一个文件，实现领域包定义的 Service 契约。
+//
+// 错误约定：数据访问（仓储）返回的错误原样透传，不做包装、不做转换，
+// 保证调用方能按原始错误判断（比如数据库的唯一约束冲突）；
+// 用例自己产生的错误用 foundation/errors 里的业务错误。
 package service
 
 import (
@@ -23,28 +27,37 @@ func NewUserService(repo userdomain.Repository) *UserService {
 }
 
 // List 返回全部用户。
-func (s *UserService) List(ctx context.Context) ([]*userdomain.User, error) {
-	entities, err := s.userRepo.FindList(ctx, "*", "id > ?", 0)
-	if err != nil {
-		return nil, fmt.Errorf("list users: %w", err)
-	}
-	return toModels(entities), nil
-}
-
-// Get 按 Id 返回用户。用户不存在时返回 userdomain.ErrNotFound。
-func (s *UserService) Get(ctx context.Context, id int64) (*userdomain.User, error) {
-	if id <= 0 {
-		return nil, errors.OutOfRange("id must be a positive integer")
+func (s *UserService) List(ctx context.Context, req *userdomain.ListRequest) (*userdomain.ListResponse, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
 	}
 
-	user, err := s.userRepo.Find(ctx, id, "*")
+	entityList, err := s.userRepo.FindList(ctx, "*", "id > ?", 0)
 	if err != nil {
 		return nil, err
 	}
-	if user == nil {
+
+	var response = &userdomain.ListResponse{
+		Total:    len(entityList),
+		UserList: toModels(entityList),
+	}
+	return response, nil
+}
+
+// Get 按 Id 返回用户。用户不存在时返回 userdomain.ErrNotFound。
+func (s *UserService) Get(ctx context.Context, id uint64) (*userdomain.User, error) {
+	if id == 0 {
+		return nil, errors.OutOfRange("id must be a positive integer")
+	}
+
+	entity, err := s.userRepo.Find(ctx, id, "*")
+	if err != nil {
+		return nil, err
+	}
+	if entity == nil || entity.Id <= 0 {
 		return nil, userdomain.ErrNotFound
 	}
-	return toModel(user), nil
+	return toModel(entity), nil
 }
 
 // Create 创建用户。
@@ -61,9 +74,9 @@ func (s *UserService) Create(ctx context.Context, req *userdomain.CreateRequest)
 
 	existing, err := s.userRepo.FindOne(ctx, "*", "email = ?", req.Email)
 	if err != nil {
-		return nil, fmt.Errorf("look up user by email: %w", err)
+		return nil, err
 	}
-	if existing != nil {
+	if existing != nil && existing.Id > 0 {
 		return nil, errors.AlreadyExists(fmt.Sprintf("email %q", req.Email))
 	}
 
@@ -83,10 +96,65 @@ func (s *UserService) Create(ctx context.Context, req *userdomain.CreateRequest)
 	if err != nil {
 		return nil, err
 	}
-	if created == nil {
+	if created == nil || created.Id <= 0 {
 		return nil, userdomain.ErrNotFound
 	}
 	return toModel(created), nil
+}
+
+// Update 更新用户信息。
+//
+// 这里的更新放在事务里执行，只是为了演示事务的用法：
+// 当前只有一条更新语句，本身用不到事务；
+// 以后要同时改多张表时，把操作加进同一个事务即可，不用改结构。
+func (s *UserService) Update(ctx context.Context, req *userdomain.UpdateRequest) (*userdomain.User, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+
+	var id = req.Id
+
+	existing, err := s.userRepo.Find(ctx, id, "*")
+	if err != nil {
+		return nil, err
+	}
+	if existing == nil || existing.Id <= 0 {
+		return nil, userdomain.ErrNotFound
+	}
+
+	// 邮箱唯一性：排除自己，只看有没有被别的用户占用。
+	conflict, err := s.userRepo.FindOne(ctx, "*", "email = ? AND id <> ?", req.Email, id)
+	if err != nil {
+		return nil, err
+	}
+	if conflict != nil && conflict.Id > 0 {
+		return nil, errors.AlreadyExists(fmt.Sprintf("email %q", req.Email))
+	}
+
+	// 事务示例：这里的更新放在事务里，只是为了演示事务的用法。
+	// Transaction 会把事务对象放进回调收到的 ctx 里，
+	// 回调里要用这个 ctx 继续操作，语句才落在同一个事务上，
+	// 所以这里用 txCtx 命名，不和外层的 ctx 混用。
+	if err = s.userRepo.Transaction(ctx, func(txCtx context.Context) error {
+		if _, updateErr := s.userRepo.Update(txCtx, id, map[string]any{
+			"name":  req.Name,
+			"email": req.Email,
+		}); updateErr != nil {
+			return updateErr
+		}
+		return nil
+	}, nil); err != nil {
+		return nil, err
+	}
+
+	updated, err := s.userRepo.Find(ctx, id, "*")
+	if err != nil {
+		return nil, err
+	}
+	if updated == nil || updated.Id <= 0 {
+		return nil, userdomain.ErrNotFound
+	}
+	return toModel(updated), nil
 }
 
 // toModel 把实体转换成对外模型。
@@ -105,12 +173,12 @@ func toModel(entity *userdomain.UserEntity) *userdomain.User {
 }
 
 // toModels 批量把实体转换成对外模型。
-func toModels(entities []*userdomain.UserEntity) []*userdomain.User {
-	if entities == nil {
+func toModels(entityList []*userdomain.UserEntity) []*userdomain.User {
+	if entityList == nil {
 		return nil
 	}
-	var models = make([]*userdomain.User, 0, len(entities))
-	for _, entity := range entities {
+	var models = make([]*userdomain.User, 0, len(entityList))
+	for _, entity := range entityList {
 		models = append(models, toModel(entity))
 	}
 	return models
