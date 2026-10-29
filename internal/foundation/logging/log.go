@@ -17,7 +17,7 @@ func Setup(cfg Config) error {
 	var handler = logkit.NewEnrichHandler(
 		slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{AddSource: true}),
 		func(ctx context.Context) []slog.Attr {
-			var rid = metadata.RequestIdFrom(ctx)
+			var rid = metadata.RequestId(ctx)
 			if rid == "" {
 				return nil
 			}

@@ -15,7 +15,6 @@
 | `service.go` | Service 契约（用例接口），以及请求、响应结构 |
 | `repository.go` | Repository 契约（数据访问接口） |
 | `errors.go` | 领域专属错误 |
-| `context.go` | 需要在上下文里传递的业务数据（按需添加） |
 
 依赖方向：domain 不 import transport、service、repository，也不 import 数据库驱动；
 仓储契约基于 dbs 的通用 Repository。
@@ -249,14 +248,19 @@ type Service interface {
 }
 ```
 
-## context.go —— 上下文里的业务数据
+## metadata —— 业务上下文数据
 
-业务相关的上下文数据（当前登录用户、租户等）由对应的领域包提供读写函数。
+业务相关的上下文数据（当前登录用户、租户等）统一放在 `internal/domain/metadata`：
+每份数据一个文件，只放读写的键和函数；数据类型留在各自的领域包里。
 
 ```go
-package authdomain
+package metadata
 
-import "context"
+import (
+	"context"
+
+	"project-template/internal/domain/authdomain"
+)
 
 // authUserKey 是承载当前登录用户信息的 context 键类型。
 //
@@ -271,7 +275,7 @@ type authUserKey struct{}
 //
 // 由鉴权中间件在鉴权通过后调用；原 Context 不会被修改，
 // 若 Context 中已有用户信息，本次注入的值会覆盖它。
-func WithAuthUser(ctx context.Context, user AuthUser) context.Context {
+func WithAuthUser(ctx context.Context, user authdomain.AuthUser) context.Context {
 	return context.WithValue(ctx, authUserKey{}, user)
 }
 
@@ -279,8 +283,8 @@ func WithAuthUser(ctx context.Context, user AuthUser) context.Context {
 //
 // 供业务代码读取登录用户；Context 中没有用户信息
 // （例如接口没有经过鉴权中间件）时返回 AuthUser 的零值。
-func AuthUserFrom(ctx context.Context) AuthUser {
-	user, _ := ctx.Value(authUserKey{}).(AuthUser)
+func AuthUserFrom(ctx context.Context) authdomain.AuthUser {
+	user, _ := ctx.Value(authUserKey{}).(authdomain.AuthUser)
 	return user
 }
 ```

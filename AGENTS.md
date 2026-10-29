@@ -63,7 +63,7 @@ transport/http  →  service  →  domain
 
 **上下文**
 
-- 业务相关的上下文数据（当前登录用户、租户等）由对应的领域包提供读写函数，业务代码用领域包给的函数取
+- 业务相关的上下文数据（当前登录用户、租户等）的读写统一放 `internal/domain/metadata`，数据类型留在各自的领域包
 - 键用私有空结构体，不同包的键不会互相冲突；取不到时返回零值，不返回错误
 
 **错误**
@@ -154,6 +154,7 @@ transport/http  →  service  →  domain
 | 业务错误与错误码 | `internal/foundation/errors` |
 | 日志文案约定 | `internal/foundation/logging` |
 | 通用上下文数据 | `internal/foundation/metadata` |
+| 业务上下文数据 | `internal/domain/metadata` |
 | 请求 id | `internal/transport/http/middleware` |
 | 请求绑定、错误映射、响应格式 | `internal/transport/http/jsoncodec` |
 | 启动、依赖组装、优雅关闭 | `internal/app` |
