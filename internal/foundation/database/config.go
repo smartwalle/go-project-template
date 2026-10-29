@@ -6,6 +6,7 @@ package database
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 // Driver 是默认的 database/sql 驱动名。
@@ -23,6 +24,8 @@ type Config struct {
 
 	// MaxIdleConns 是最大空闲连接数。
 	MaxIdleConns int `yaml:"max_idle_conns"`
+
+	ConnectTimeout time.Duration `yaml:"connect_timeout"`
 }
 
 // Validate 校验配置。错误信息带具体配置路径，便于定位问题。
@@ -38,6 +41,9 @@ func (c Config) Validate() error {
 	}
 	if c.MaxIdleConns > c.MaxOpenConns {
 		return fmt.Errorf("database.max_idle_conns must not exceed database.max_open_conns")
+	}
+	if c.ConnectTimeout <= 0 {
+		return fmt.Errorf("database.connect_timeout must be positive")
 	}
 	return nil
 }

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/smartwalle/dbs"
@@ -18,8 +19,6 @@ const (
 )
 
 // OpenPostgres 建立 PostgreSQL 连接池，并为 dbs 设置 PostgreSQL 方言。
-//
-// dbs.Open 在返回前会完成一次带超时的连通性检查，检查不通过时返回错误，调用方不会拿到半成品资源。
 func OpenPostgres(cfg Config) (*dbs.DB, error) {
 	var maxOpenConns = cfg.MaxOpenConns
 	if maxOpenConns <= 0 {
@@ -35,6 +34,14 @@ func OpenPostgres(cfg Config) (*dbs.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open database with driver %q: %w", Driver, err)
 	}
+
+	pingCtx, cancel := context.WithTimeout(context.Background(), cfg.ConnectTimeout)
+	defer cancel()
+
+	if err = db.PingContext(pingCtx); err != nil {
+		return nil, err
+	}
+
 	db.UseDialect(postgres.Dialect())
 	return db, nil
 }

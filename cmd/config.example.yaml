@@ -13,3 +13,4 @@ database:
   dsn: "postgres://postgres:postgres@127.0.0.1:5432/app?sslmode=disable"
   max_open_conns: 20
   max_idle_conns: 5
+  connect_timeout: 3s
