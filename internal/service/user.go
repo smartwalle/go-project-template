@@ -76,7 +76,7 @@ func (s *UserService) List(ctx context.Context, req *userdomain.ListRequest) (*u
 	return response, nil
 }
 
-// Get 按 Id 返回用户。用户不存在时返回 userdomain.ErrUserNotFound。
+// Get 按 Id 返回用户。用户不存在时返回 userdomain.ErrNotFound。
 func (s *UserService) Get(ctx context.Context, req *userdomain.GetRequest) (*userdomain.User, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
@@ -87,7 +87,7 @@ func (s *UserService) Get(ctx context.Context, req *userdomain.GetRequest) (*use
 		return nil, err
 	}
 	if entity == nil || entity.Id <= 0 {
-		return nil, userdomain.ErrUserNotFound
+		return nil, userdomain.ErrNotFound
 	}
 	return toModel(entity), nil
 }
@@ -129,7 +129,7 @@ func (s *UserService) Create(ctx context.Context, req *userdomain.CreateRequest)
 		return nil, err
 	}
 	if created == nil || created.Id <= 0 {
-		return nil, userdomain.ErrUserNotFound
+		return nil, userdomain.ErrNotFound
 	}
 	return toModel(created), nil
 }
@@ -151,7 +151,7 @@ func (s *UserService) Update(ctx context.Context, req *userdomain.UpdateRequest)
 		return nil, err
 	}
 	if existing == nil || existing.Id <= 0 {
-		return nil, userdomain.ErrUserNotFound
+		return nil, userdomain.ErrNotFound
 	}
 
 	// 邮箱唯一性：排除自己，只看有没有被别的用户占用。
@@ -184,7 +184,7 @@ func (s *UserService) Update(ctx context.Context, req *userdomain.UpdateRequest)
 		return nil, err
 	}
 	if updated == nil || updated.Id <= 0 {
-		return nil, userdomain.ErrUserNotFound
+		return nil, userdomain.ErrNotFound
 	}
 	return toModel(updated), nil
 }
