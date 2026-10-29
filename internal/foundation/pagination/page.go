@@ -1,8 +1,6 @@
 // Package pagination 提供分页请求参数和分页计算。
 //
-// 各模块的请求参数内嵌 Page，就能直接拿到分页字段和分页计算：
-// PageNumber、PageSize 是分页参数，Normalize 负责归一化，
-// Limit 和 Offset 负责算条数上限和偏移量，OutOfRange 负责判断页码是否越界。
+// 各模块的请求参数内嵌 Page，就能直接拿到分页字段和分页计算。
 package pagination
 
 const (

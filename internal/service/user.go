@@ -2,9 +2,7 @@
 //
 // 每个业务模块一个文件，实现领域包定义的 Service 契约。
 //
-// 查询的放法：会被其它 service 复用的查询，声明到领域包的仓储契约里；
-// 一次性的查询（例如分页列表）直接用仓储的 SelectBuilder 在这里拼，
-// 不为它单独扩展仓储接口。
+// 查询放法：会被复用的进仓储契约，一次性的用 SelectBuilder 在这里拼。
 //
 // 错误约定：数据访问（仓储）返回的错误原样透传，不做包装、不做转换，
 // 保证调用方能按原始错误判断（比如数据库的唯一约束冲突）；
@@ -16,6 +14,7 @@ import (
 	"fmt"
 	"time"
 
+	"project-template/internal/domain"
 	"project-template/internal/domain/userdomain"
 	"project-template/internal/foundation/errors"
 )
@@ -42,6 +41,7 @@ func (s *UserService) List(ctx context.Context, req *userdomain.ListRequest) (*u
 	// 用仓储的查询构造器拼条件：多个条件之间是"且"的关系，分页用 limit、offset。
 	var sb = s.userRepo.SelectBuilder(ctx)
 	sb.Selects("*")
+	sb.Where("deleted = ?", domain.DeleteStatusNormal)
 	if req.Name != "" {
 		sb.Where("name LIKE ?", "%"+req.Name+"%")
 	}
@@ -82,7 +82,7 @@ func (s *UserService) Get(ctx context.Context, req *userdomain.GetRequest) (*use
 		return nil, err
 	}
 
-	entity, err := s.userRepo.Find(ctx, req.Id, "*")
+	entity, err := s.userRepo.FindOne(ctx, "*", "id = ? AND deleted = ?", req.Id, domain.DeleteStatusNormal)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func (s *UserService) Create(ctx context.Context, req *userdomain.CreateRequest)
 		return nil, err
 	}
 
-	existing, err := s.userRepo.FindOne(ctx, "*", "email = ?", req.Email)
+	existing, err := s.userRepo.FindOne(ctx, "*", "email = ? AND deleted = ?", req.Email, domain.DeleteStatusNormal)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func (s *UserService) Create(ctx context.Context, req *userdomain.CreateRequest)
 
 	// dbs 的 Create 只返回 Result，而 PostgreSQL 驱动不支持 LastInsertId，
 	// 拿不到数据库生成的 Id，这里回查一次。
-	created, err := s.userRepo.FindOne(ctx, "*", "email = ?", req.Email)
+	created, err := s.userRepo.FindOne(ctx, "*", "email = ? AND deleted = ?", req.Email, domain.DeleteStatusNormal)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func (s *UserService) Update(ctx context.Context, req *userdomain.UpdateRequest)
 
 	var id = req.Id
 
-	existing, err := s.userRepo.Find(ctx, id, "*")
+	existing, err := s.userRepo.FindOne(ctx, "*", "id = ? AND deleted = ?", id, domain.DeleteStatusNormal)
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +155,7 @@ func (s *UserService) Update(ctx context.Context, req *userdomain.UpdateRequest)
 	}
 
 	// 邮箱唯一性：排除自己，只看有没有被别的用户占用。
-	conflict, err := s.userRepo.FindOne(ctx, "*", "email = ? AND id <> ?", req.Email, id)
+	conflict, err := s.userRepo.FindOne(ctx, "*", "email = ? AND id <> ? AND deleted = ?", req.Email, id, domain.DeleteStatusNormal)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +179,7 @@ func (s *UserService) Update(ctx context.Context, req *userdomain.UpdateRequest)
 		return nil, err
 	}
 
-	updated, err := s.userRepo.Find(ctx, id, "*")
+	updated, err := s.userRepo.FindOne(ctx, "*", "id = ? AND deleted = ?", id, domain.DeleteStatusNormal)
 	if err != nil {
 		return nil, err
 	}

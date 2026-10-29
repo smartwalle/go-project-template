@@ -1,7 +1,3 @@
-// Package jsoncodec 是 rx 之上的 JSON 请求(返回)数据编解码器：请求绑定、业务错误映射与统一响应输出。
-//
-// 业务 Handler 只需要写"拿到入参、调用用例、返回数据或错误"，
-// 其余都交给这里的 Handler。
 package jsoncodec
 
 import (
@@ -58,7 +54,8 @@ func decode(c *rx.Context, req any) error {
 	return json.NewDecoder(c.Request.Body).Decode(req)
 }
 
-// ErrorEncoder 错误编码器
+// ErrorEncoder 把错误编码成响应：业务错误返回它的 code 和 message，
+// 其它错误统一返回服务端内部错误。
 func ErrorEncoder() rx.ErrorEncoder {
 	return func(c *rx.Context, err error) {
 		slog.ErrorContext(c.Context(), "请求处理失败",
@@ -79,6 +76,7 @@ func ErrorEncoder() rx.ErrorEncoder {
 	}
 }
 
+// NotFoundHandler 是路由未命中时的处理函数，返回 NotFound 业务错误。
 func NotFoundHandler() rx.HandlerFunc {
 	return func(c *rx.Context) {
 		c.AbortWithError(errors.NotFound("route not found"))

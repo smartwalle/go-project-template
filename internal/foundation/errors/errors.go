@@ -2,18 +2,13 @@
 //
 // Error 用 code 表达语义、用 message 描述细节，调用方按 code 判断错误类型。
 //
-// 本包只放跨业务通用的语义，不放业务专属的错误。
-// 业务代码直接复用这里的构造函数，message 写清楚是哪个资源：
+// 本包只放跨业务通用的语义，不放业务专属的错误：
 //
-//	errors.NotFound("用户不存在")
-//	errors.NotFound("订单不存在")
+//	errors.NotFound("user not found")
 //
-// 同一语义用同一个 code，调用方按 code 判断，message 只描述细节。
-// 需要区分业务语义时，在各自的领域包里定义专属的 code，用 New 构造，
-// code 带上业务前缀避免撞名：
+// 需要区分业务语义时，在各自的领域包里用 New 定义专属 code，code 带业务前缀：
 //
-//	errors.New("user_not_found", "用户不存在")
-//	errors.New("order_not_found", "订单不存在")
+//	errors.New("user_not_found", "user not found")
 //
 // 两种写法都遵守同样的约定：code 稳定可读、message 描述细节。
 package errors
@@ -28,7 +23,7 @@ import (
 // 它是值类型，code 与 message 相同的两个 Error 相等，
 // 可以直接用 errors.Is 比较。
 //
-// message 允许随业务变化（"用户不存在"、"订单不存在"），
+// message 允许随业务变化（"user not found"、"order not found"），
 // 因此判断错误语义要按 Code 比，不要按值比。
 type Error struct {
 	code    string
@@ -40,14 +35,17 @@ func New(code string, message string) Error {
 	return Error{code: code, message: message}
 }
 
+// Error 返回错误描述，形如 "code - message"。
 func (err Error) Error() string {
 	return strings.Join([]string{err.code, err.message}, " - ")
 }
 
+// Code 返回错误码。
 func (err Error) Code() string {
 	return err.code
 }
 
+// Message 返回错误描述。
 func (err Error) Message() string {
 	return err.message
 }

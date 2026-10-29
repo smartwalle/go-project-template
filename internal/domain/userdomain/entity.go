@@ -1,21 +1,14 @@
-// Package userdomain 定义用户领域的实体、业务契约与领域错误。
-//
-// 每个业务模块一个包，契约都定义在这里。
-//
-// 文件划分：
-//   - entity.go：表结构映射，一表一个 XXXEntity；
-//   - model.go：整理和组合数据用的模型，不绑定数据库表；
-//   - service.go：Service 契约（用例接口），以及请求、响应结构；
-//   - repository.go：Repository 契约（数据访问接口）；
-//   - errors.go：领域错误。
 package userdomain
 
-import "time"
+import (
+	"time"
+
+	"project-template/internal/domain"
+)
 
 // UserEntity 是 users 表对应的实体。
 //
-// 命名规则：每张数据库表对应一个 Entity 结构体，名称是表名的驼峰形式加 Entity 后缀，
-// 例如 users 表对应 UserEntity。
+// 命名规则：每张数据库表对应一个 Entity 结构体，名称是表名的驼峰形式加 Entity 后缀。
 //
 // 标识符规则：实体的标识符字段类型统一使用 uint64。
 //
@@ -33,6 +26,9 @@ type UserEntity struct {
 
 	// CreatedAt 是用户创建时间。
 	CreatedAt time.Time `sql:"created_at" json:"created_at"`
+
+	// Deleted 是逻辑删除状态：0-正常 1-删除。
+	Deleted domain.DeleteStatus `sql:"deleted" json:"deleted"`
 }
 
 // TableName 是 users 表名，供 dbs 的通用 Repository 使用。

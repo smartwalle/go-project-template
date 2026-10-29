@@ -1,7 +1,3 @@
-// Package http 是 HTTP 传输层：创建 Engine、组装路由、配置中间件，
-// 并用 Server 管理 HTTP 服务的监听与启停。
-//
-// 统一响应格式与业务错误的映射在 jsonrender 里完成。
 package http
 
 import (
@@ -14,6 +10,7 @@ import (
 	"project-template/internal/foundation/errors"
 	"project-template/internal/transport/http/handler"
 	"project-template/internal/transport/http/jsoncodec"
+	"project-template/internal/transport/http/middleware"
 
 	"github.com/smartwalle/rx"
 	"github.com/smartwalle/rx/router"
@@ -32,9 +29,9 @@ type Server struct {
 // config 提供地址与超时参数，userService 是用户模块的业务契约（定义在领域包）。
 func NewServer(config Config, userService userdomain.Service) *Server {
 	var engine = rx.New()
-	engine.Use(MidRecovery())
-	engine.Use(MidRequestId())
-	engine.Use(MidLogger())
+	engine.Use(middleware.Recovery())
+	engine.Use(middleware.RequestId())
+	engine.Use(middleware.Logger())
 	engine.UseErrorEncoder(jsoncodec.ErrorEncoder())
 	engine.UseNotFoundHandler(jsoncodec.NotFoundHandler())
 

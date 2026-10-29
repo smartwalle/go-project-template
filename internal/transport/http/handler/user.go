@@ -1,13 +1,3 @@
-// Package handler 是业务接口的 HTTP 适配层。
-//
-// 这里只做协议适配：绑定请求、调用用例、输出结果。
-// 业务错误到状态码的映射由 jsoncodec 统一完成。
-//
-// 接口命名规则：
-//   - 全部用 POST，参数一律放在 JSON 请求体；
-//   - 路径是"资源 + 用例名"，例如：
-//     列表 POST /users/list，创建 POST /users/create，
-//     单个查询 POST /users/info，更新 POST /users/update。
 package handler
 
 import (

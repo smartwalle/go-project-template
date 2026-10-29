@@ -10,11 +10,6 @@ import (
 )
 
 // CreateRequest 是"创建用户"用例的请求参数。
-//
-// 命名规则：请求参数统一命名为 XXXRequest，XXX 是用例名（创建用户 → CreateRequest），
-// 并统一用指针传递。
-// 每个 Request 必须实现 Validate，参数校验写在 Validate 里；
-// service 在用例入口处调用 Validate，校验不通过直接返回错误。
 type CreateRequest struct {
 	// Name 是用户名称。
 	Name string `json:"name"`
@@ -23,13 +18,9 @@ type CreateRequest struct {
 	Email string `json:"email"`
 }
 
-// Validate 校验请求参数。
+// Validate 校验请求参数：去掉字段首尾空白后校验，清洗结果写回字段。
 //
-// 请求为 nil 时直接返回 MissingArgument；
-// 否则先去掉字段首尾空白再校验，并把清洗结果写回请求字段：
-// 校验通过后请求里的字段已是规范化后的值，不必再清洗一次。
-//
-// 参数缺失返回 MissingArgument，参数格式不合法返回 InvalidArgument。
+// 参数缺失返回 MissingArgument，格式不合法返回 InvalidArgument。
 func (r *CreateRequest) Validate() error {
 	if r == nil {
 		return errors.MissingArgument("request is required")
@@ -52,15 +43,7 @@ func (r *CreateRequest) Validate() error {
 
 // ListRequest 是"列出用户"用例的请求参数。
 //
-// 命名规则：请求参数统一命名为 XXXRequest，XXX 是用例名（列出用户 → ListRequest），
-// 并统一用指针传递。
-// 每个 Request 必须实现 Validate，参数校验写在 Validate 里；
-// service 在用例入口处调用 Validate，校验不通过直接返回错误。
-//
-// 分页参数：Page 是页码，从 1 开始；PageSize 是每页条数。
-// 取值不合法时由 Validate 归一化，不直接报错。
-//
-// 过滤参数：Name 和 Email 是模糊匹配条件，为空表示不过滤。
+// 分页参数内嵌 pagination.Page。
 type ListRequest struct {
 	// Page 是分页参数：页码和每页条数。
 	pagination.Page
@@ -72,11 +55,7 @@ type ListRequest struct {
 	Email string `json:"email"`
 }
 
-// Validate 校验请求参数。
-//
-// 请求为 nil 时直接返回 MissingArgument；
-// 分页参数由分页包归一化；过滤条件去掉首尾空白，为空表示不过滤。
-// 校验通过后请求里的字段已是规范化后的值，service 直接使用。
+// Validate 校验请求参数：分页参数归一化，过滤条件去掉首尾空白。
 func (r *ListRequest) Validate() error {
 	if r == nil {
 		return errors.MissingArgument("request is required")
@@ -90,7 +69,6 @@ func (r *ListRequest) Validate() error {
 
 // ListResponse 是"列出用户"用例的返回数据。
 //
-// 命名规则：返回数据统一命名为 XXXResponse，XXX 是用例名（列出用户 → ListResponse）。
 // 用例只需要返回模型本身时直接返回模型（Get、Create 返回 *User）；
 // 需要带上模型之外的信息（总数、分页等）时用 Response 包装。
 type ListResponse struct {
@@ -102,20 +80,12 @@ type ListResponse struct {
 }
 
 // GetRequest 是"查询用户"用例的请求参数。
-//
-// 命名规则：请求参数统一命名为 XXXRequest，XXX 是用例名（查询用户 → GetRequest），
-// 并统一用指针传递。
-// 每个 Request 必须实现 Validate，参数校验写在 Validate 里；
-// service 在用例入口处调用 Validate，校验不通过直接返回错误。
 type GetRequest struct {
 	// Id 是要查询的用户标识。
 	Id uint64 `json:"id"`
 }
 
-// Validate 校验请求参数。
-//
-// 请求为 nil 时直接返回 MissingArgument；
-// 标识缺失时返回 MissingArgument。
+// Validate 校验请求参数：标识缺失返回 MissingArgument。
 func (r *GetRequest) Validate() error {
 	if r == nil {
 		return errors.MissingArgument("request is required")
@@ -127,11 +97,6 @@ func (r *GetRequest) Validate() error {
 }
 
 // UpdateRequest 是"更新用户"用例的请求参数。
-//
-// 命名规则：请求参数统一命名为 XXXRequest，XXX 是用例名（更新用户 → UpdateRequest），
-// 并统一用指针传递。
-// 每个 Request 必须实现 Validate，参数校验写在 Validate 里；
-// service 在用例入口处调用 Validate，校验不通过直接返回错误。
 type UpdateRequest struct {
 	// Id 是要更新的用户标识。
 	Id uint64 `json:"id"`
@@ -143,13 +108,9 @@ type UpdateRequest struct {
 	Email string `json:"email"`
 }
 
-// Validate 校验请求参数。
+// Validate 校验请求参数：去掉字段首尾空白后校验，清洗结果写回字段。
 //
-// 请求为 nil 时直接返回 MissingArgument；
-// 否则先去掉字段首尾空白再校验，并把清洗结果写回请求字段：
-// 校验通过后请求里的字段已是规范化后的值，不必再清洗一次。
-//
-// 参数缺失返回 MissingArgument，参数格式不合法返回 InvalidArgument。
+// 参数缺失返回 MissingArgument，格式不合法返回 InvalidArgument。
 func (r *UpdateRequest) Validate() error {
 	if r == nil {
 		return errors.MissingArgument("request is required")
@@ -175,15 +136,13 @@ func (r *UpdateRequest) Validate() error {
 
 // Service 是用户模块的业务契约，每个方法是一个业务用例。
 //
+// 入参约定：请求参数统一命名为 XXXRequest（XXX 是用例名）、统一用指针传递，
+// 和响应数据一起定义在本文件；每个 Request 必须实现 Validate，
+// 实现方在用例入口处调用它做校验，校验不通过直接返回错误。
+//
 // 返回约定：用例返回模型 User，不建议直接返回实体 UserEntity：
 // Entity 是表映射，直接返回等于把表结构带到调用方，通常由实现层转换成模型再返回。
 // 只需要返回模型时直接返回模型，需要带上额外信息时用 XXXResponse 包装。
-//
-// 入参约定：请求参数统一用 XXXRequest 命名、统一用指针传递，必须实现 Validate 方法；
-// 实现方在用例入口处调用 Validate 做校验，校验不通过直接返回错误。
-//
-// 结构约定：请求参数和响应数据统一定义在本文件，命名为 XXXRequest、XXXResponse；
-// 结构里可以引用 model.go 里定义的模型。
 //
 // 实现由 internal/service 提供，在应用组装层注入。
 type Service interface {

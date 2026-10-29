@@ -1,7 +1,3 @@
-// Package app 负责依赖组装与生命周期协调。
-//
-// 应用层只做三件事：按依赖方向创建实现、把实现注入给使用方、
-// 用 bootstrap 管理启动与关闭。
 package app
 
 import (
