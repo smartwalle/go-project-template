@@ -175,12 +175,15 @@ func (r *UpdateRequest) Validate() error {
 
 // Service 是用户模块的业务契约，每个方法是一个业务用例。
 //
-// 返回约定：用例返回对外模型 User，不返回实体 UserEntity：
-// Entity 对应数据库结构，不直接暴露给调用方，由实现层转换成模型再返回。
+// 返回约定：用例返回模型 User，不建议直接返回实体 UserEntity：
+// Entity 是表映射，直接返回等于把表结构带到调用方，通常由实现层转换成模型再返回。
 // 只需要返回模型时直接返回模型，需要带上额外信息时用 XXXResponse 包装。
 //
 // 入参约定：请求参数统一用 XXXRequest 命名、统一用指针传递，必须实现 Validate 方法；
 // 实现方在用例入口处调用 Validate 做校验，校验不通过直接返回错误。
+//
+// 结构约定：请求参数和响应数据统一定义在本文件，命名为 XXXRequest、XXXResponse；
+// 结构里可以引用 model.go 里定义的模型。
 //
 // 实现由 internal/service 提供，在应用组装层注入。
 type Service interface {

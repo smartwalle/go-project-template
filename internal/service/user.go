@@ -189,9 +189,9 @@ func (s *UserService) Update(ctx context.Context, req *userdomain.UpdateRequest)
 	return toModel(updated), nil
 }
 
-// toModel 把实体转换成对外模型。
+// toModel 把实体转换成模型。
 //
-// Entity 对应数据库结构，不直接对外输出，只在这里转换成模型。
+// Entity 是表映射，模型是整理好的数据，转换在这里做。
 func toModel(entity *userdomain.UserEntity) *userdomain.User {
 	if entity == nil {
 		return nil
@@ -204,7 +204,7 @@ func toModel(entity *userdomain.UserEntity) *userdomain.User {
 	}
 }
 
-// toModels 批量把实体转换成对外模型。
+// toModels 批量把实体转换成模型。
 func toModels(entityList []*userdomain.UserEntity) []*userdomain.User {
 	if entityList == nil {
 		return nil

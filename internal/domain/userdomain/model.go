@@ -2,13 +2,11 @@ package userdomain
 
 import "time"
 
-// User 是用户模块的对外模型。
+// User 是用户模块的模型。
 //
-// Model 是 Service 对外提供的结构，承载用例的输出：
-// Entity 对应数据库结构，不直接对外输出，由 Service 负责转换成 Model。
-// Model 怎么传输、怎么序列化，由使用它的协议层决定。
+// Model 是用来整理、组合数据的结构体：
 //
-// 标识符规则：模型的标识符字段类型与实体保持一致，统一使用 uint64。
+// 标识符规则：模型里的标识符字段类型与实体保持一致，统一使用 uint64。
 type User struct {
 	// Id 是用户的业务标识。
 	Id uint64 `json:"id"`
