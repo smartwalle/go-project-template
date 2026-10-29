@@ -48,8 +48,9 @@ handler 只做协议适配：绑定请求、调用用例、返回结果；业务
 请求绑定、响应结构、错误编码是一套，要换就整套换：
 在 jsoncodec 之外另建一个包，不要改 jsoncodec 本身——它被所有业务接口共用，改了会影响全部接口。
 
-第三方接口的错误要在自己的 handler 里直接输出，不要用 `c.AbortWithError`：
-错误编码器是 **rx.Engine 级别**的，那个错误会落到这里的 ErrorEncoder，响应格式还是统一的。
+返回结构有多种时，在自己的 handler 里处理错误并输出，是最灵活的做法：
+不要用 `c.AbortWithError`，错误编码器是 **rx.Engine 级别**的，那个错误会落到这里的
+ErrorEncoder，响应格式还是统一的。
 也不要在 ErrorEncoder 里按错误类型分支判断，通用层不该知道第三方接口的存在。
 
 ## 统一响应
