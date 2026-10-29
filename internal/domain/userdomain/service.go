@@ -190,13 +190,13 @@ type Service interface {
 	// List 返回用户列表。
 	List(ctx context.Context, req *ListRequest) (*ListResponse, error)
 
-	// Get 按 Id 返回用户；用户不存在时返回 ErrNotFound。
+	// Get 按 Id 返回用户；用户不存在时返回 ErrUserNotFound。
 	Get(ctx context.Context, req *GetRequest) (*User, error)
 
-	// Create 创建用户；邮箱已存在时返回 ErrAlreadyExists。
+	// Create 创建用户；邮箱已存在时返回 AlreadyExists 错误。
 	Create(ctx context.Context, req *CreateRequest) (*User, error)
 
 	// Update 更新用户信息（要更新的用户标识在请求参数里）；
-	// 用户不存在时返回 ErrNotFound，邮箱已被占用时返回 ErrAlreadyExists。
+	// 用户不存在时返回 ErrUserNotFound，邮箱已被占用时返回 AlreadyExists 错误。
 	Update(ctx context.Context, req *UpdateRequest) (*User, error)
 }

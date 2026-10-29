@@ -1,7 +1,21 @@
-// Package errors 提供统一的业务错误类型与常用错误码。
+// Package errors 提供通用的错误类型与常用错误码。
 //
-// 业务错误用 code 表达语义、用 message 描述细节：
-// HTTP 层按 code 映射状态码，客户端按 code 判断错误类型。
+// Error 用 code 表达语义、用 message 描述细节，调用方按 code 判断错误类型。
+//
+// 本包只放跨业务通用的语义，不放业务专属的错误。
+// 业务代码直接复用这里的构造函数，message 写清楚是哪个资源：
+//
+//	errors.NotFound("用户不存在")
+//	errors.NotFound("订单不存在")
+//
+// 同一语义用同一个 code，调用方按 code 判断，message 只描述细节。
+// 需要区分业务语义时，在各自的领域包里定义专属的 code，用 New 构造，
+// code 带上业务前缀避免撞名：
+//
+//	errors.New("user_not_found", "用户不存在")
+//	errors.New("order_not_found", "订单不存在")
+//
+// 两种写法都遵守同样的约定：code 稳定可读、message 描述细节。
 package errors
 
 import (
@@ -13,6 +27,9 @@ import (
 //
 // 它是值类型，code 与 message 相同的两个 Error 相等，
 // 可以直接用 errors.Is 比较。
+//
+// message 允许随业务变化（"用户不存在"、"订单不存在"），
+// 因此判断错误语义要按 Code 比，不要按值比。
 type Error struct {
 	code    string
 	message string
@@ -92,7 +109,7 @@ func TooManyRequests(msg string) Error {
 
 // 常用的通用错误码。
 //
-// code 是稳定的机器可读标识：HTTP 层按它映射状态码，客户端按它判断错误类型。
+// code 是稳定的机器可读标识，调用方按它判断错误类型。
 // 这里只放跨业务通用的语义，业务专属的错误码留在各自的领域包里。
 const (
 	// CodeInvalidArgument 表示参数不合法。
