@@ -1,4 +1,4 @@
-// Package jsoncodec 是 rx 之上的 JSON 请求(返回)数据编解码器：请求绑定、业务错误映射与统一响应输出。
+// Package jsoncodec 是 rx 之上的 JSON 请求(返回)数据编解码器：请求绑定、业务错误响应与统一响应输出。
 //
 // 业务 Handler 只需要写"拿到入参、调用用例、返回数据或错误"，
 // 其余都交给这里的 Handler。

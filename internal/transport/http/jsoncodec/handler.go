@@ -12,7 +12,7 @@ import (
 
 // Handler 绑定请求体、调用业务函数并输出结果。
 //
-// 业务函数的返回值就是响应里的 data；错误统一在这里映射成状态码与错误响应，
+// 业务函数的返回值就是响应里的 data；错误交给 ErrorEncoder 统一编码成响应，
 // 业务函数不用关心 HTTP 细节。
 func Handler[T any, R any](fn func(c *rx.Context, req T) (R, error)) rx.HandlerFunc {
 	return func(c *rx.Context) {
@@ -54,8 +54,10 @@ func decode(c *rx.Context, req any) error {
 	return json.NewDecoder(c.Request.Body).Decode(req)
 }
 
-// ErrorEncoder 把错误编码成响应：业务错误返回它的 code 和 message，
-// 其它错误统一返回服务端内部错误。
+// ErrorEncoder 把错误编码成响应。
+//
+// 状态码没有统一规范，由项目自己定：这里业务错误返回 400、其它错误返回 500，
+// 要区分就按项目自己的规范改这里。body 里的 code 是错误标识，与状态码没有对应关系。
 func ErrorEncoder() rx.ErrorEncoder {
 	return func(c *rx.Context, err error) {
 		slog.ErrorContext(c.Context(), "请求处理失败",

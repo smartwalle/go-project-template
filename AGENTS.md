@@ -106,7 +106,7 @@ transport/http  →  service  →  domain
 - 请求体必须存在，空请求体按参数不合法处理
 - handler 方法签名统一：`func (h *XxxHandler) Yyy(c *rx.Context, req *<模块>.XxxRequest) (*<模块>.Xxx, error)`
 - handler 只做协议适配：绑定请求、调用用例、返回结果；业务逻辑一律在 service
-- 业务错误到状态码的映射由 jsoncodec 统一处理，handler 不自己写状态码
+- 业务错误的响应由 jsoncodec 统一输出，handler 不自己写状态码
 - 业务接口统一用 jsoncodec 绑定请求、输出响应；对接第三方、报文格式不同时另建包自定义编解码，不改 jsoncodec
 - 路由在 handler 的 `RegisterRoutes` 里注册，路径前缀由 transport/http 统一加
 

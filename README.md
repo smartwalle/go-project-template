@@ -40,7 +40,7 @@ internal/transport/http/   HTTP 适配层
 | 环节 | 位置 | 负责什么 |
 | --- | --- | --- |
 | 路由 | `internal/transport/http/server.go` | 注册中间件、路由分组 |
-| 绑定 | `internal/transport/http/jsoncodec` | 把 JSON 请求体绑成 Request；错误统一映射成状态码 |
+| 绑定 | `internal/transport/http/jsoncodec` | 把 JSON 请求体绑成 Request；错误统一编码成响应 |
 | 适配 | `internal/transport/http/handler` | 取出参数、调用用例、返回结果 |
 | 校验 | `internal/domain/<模块>` 的 Request.Validate | 校验请求参数，并把清洗结果写回字段 |
 | 用例 | `internal/service` | 业务逻辑：取数、转换成模型、组装响应 |
