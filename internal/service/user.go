@@ -2,6 +2,10 @@
 //
 // 每个业务模块一个文件，实现领域包定义的 Service 契约。
 //
+// 查询的放法：会被其它 service 复用的查询，声明到领域包的仓储契约里；
+// 一次性的查询（例如分页列表）直接用仓储的 SelectBuilder 在这里拼，
+// 不为它单独扩展仓储接口。
+//
 // 错误约定：数据访问（仓储）返回的错误原样透传，不做包装、不做转换，
 // 保证调用方能按原始错误判断（比如数据库的唯一约束冲突）；
 // 用例自己产生的错误用 foundation/errors 里的业务错误。
@@ -26,31 +30,59 @@ func NewUserService(repo userdomain.Repository) *UserService {
 	return &UserService{userRepo: repo}
 }
 
-// List 返回全部用户。
+// List 分页返回用户列表。
+//
+// 分页参数和过滤条件由 Request.Validate 归一化，这里直接使用；
+// Total 是符合条件的用户总数，不是当前页的条数。
 func (s *UserService) List(ctx context.Context, req *userdomain.ListRequest) (*userdomain.ListResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
 
-	entityList, err := s.userRepo.FindList(ctx, "*", "id > ?", 0)
-	if err != nil {
+	// 用仓储的查询构造器拼条件：多个条件之间是"且"的关系，分页用 limit、offset。
+	var sb = s.userRepo.SelectBuilder(ctx)
+	sb.Selects("*")
+	if req.Name != "" {
+		sb.Where("name LIKE ?", "%"+req.Name+"%")
+	}
+	if req.Email != "" {
+		sb.Where("email LIKE ?", "%"+req.Email+"%")
+	}
+	sb.OrderBy("id")
+
+	// 先统计总数：Count 会去掉 limit、offset 和排序，按同样的条件统计。
+	var total int64
+	if err := sb.Count().ScanRow(ctx, &total); err != nil {
+		return nil, err
+	}
+
+	// 页码超出范围时不用再查列表。
+	if req.OutOfRange(total) {
+		return &userdomain.ListResponse{Total: int(total), UserList: []*userdomain.User{}}, nil
+	}
+
+	sb.Limit(req.Limit())
+	sb.Offset(req.Offset())
+
+	var entityList []*userdomain.UserEntity
+	if err := sb.Scan(ctx, &entityList); err != nil {
 		return nil, err
 	}
 
 	var response = &userdomain.ListResponse{
-		Total:    len(entityList),
+		Total:    int(total),
 		UserList: toModels(entityList),
 	}
 	return response, nil
 }
 
 // Get 按 Id 返回用户。用户不存在时返回 userdomain.ErrNotFound。
-func (s *UserService) Get(ctx context.Context, id uint64) (*userdomain.User, error) {
-	if id == 0 {
-		return nil, errors.OutOfRange("id must be a positive integer")
+func (s *UserService) Get(ctx context.Context, req *userdomain.GetRequest) (*userdomain.User, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
 	}
 
-	entity, err := s.userRepo.Find(ctx, id, "*")
+	entity, err := s.userRepo.Find(ctx, req.Id, "*")
 	if err != nil {
 		return nil, err
 	}
