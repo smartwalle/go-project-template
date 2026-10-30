@@ -1,12 +1,12 @@
 # internal/foundation
 
-通用技术能力：提供可跨业务复用的基础设施和通用组件，不依赖具体业务领域，不包含业务专属模型、规则和实现。
+Foundation 提供跨业务复用的通用技术能力，不依赖具体业务领域，也不包含业务专属模型、规则和实现。
 
 Foundation 中的能力由需要它们的层按需依赖，不要求所有层都依赖 Foundation。
 
 | 包 | 职责 |
 | --- | --- |
-| `errors/` | 通用错误类型和通用业务错误码 |
+| `errors/` | 通用错误类型和跨业务通用错误码 |
 | `database/` | 数据库连接、连接池参数、关闭；唯一允许出现驱动和 DSN 的地方 |
 | `logging/` | 全局 slog logger 的初始化、SQL 日志接入 |
 | `metadata/` | 通用的上下文数据管理（请求 ID 等） |
@@ -17,7 +17,7 @@ Foundation 中的能力由需要它们的层按需依赖，不要求所有层都
 这里定义跨业务可复用的通用错误语义，例如参数错误、资源不存在、资源已存在等。
 
 ```go
-// 用例自己产生的通用错误
+// 用例自己产生的通用错误。
 return nil, errors.NotFound("user not found")
 ```
 
@@ -59,7 +59,7 @@ func (r *ListRequest) Validate() error {
 
 ## 日志
 
-消息（msg）使用中文，字段名（key）保持英文，错误文案原样透传。
+日志消息（msg）使用中文，字段名（key）保持英文，错误文案原样透传。
 
 具体日志约定见 `logging` 包的注释。
 
@@ -78,4 +78,5 @@ rid := metadata.RequestIdFrom(ctx)
 
 - 通用上下文数据放在 `internal/foundation/metadata`。
 - 业务相关的上下文数据不放在这里，由 `internal/domain/metadata` 统一管理。
+- 当前请求 ID 使用 `string` 类型。
 - 请求 ID 由 HTTP 中间件写入，日志中由 logkit 自动注入，业务代码不需要自行拼接。

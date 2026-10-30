@@ -36,11 +36,11 @@ internal/transport/http/   HTTP 适配层
 依赖约定：
 
 - `transport` 调用 `service` 提供的业务用例。
-- `service` 依赖 `domain` 中定义的 Service、Repository 等业务契约，不依赖 Repository 的具体实现。
+- `service` 实现 `domain` 中定义的 Service 契约，并通过 Repository 契约访问数据，不依赖 Repository 的具体实现。
 - `repository` 实现 `domain` 中定义的 Repository 契约。
-- `foundation` 提供通用技术能力，由需要相关能力的层按需依赖。
+- `foundation` 提供跨业务通用技术能力，由需要相关能力的层按需依赖。
 - `app` 负责创建、组装各层实现，并管理应用生命周期。
-- `domain` 不依赖具体实现层和外部传输协议。
+- `domain` 定义业务模型和契约，不依赖具体实现层和外部传输协议。
 
 各层职责和依赖约定详见 [AGENTS.md](AGENTS.md)。
 
@@ -56,7 +56,7 @@ internal/transport/http/   HTTP 适配层
 | 校验 | `internal/domain/<模块>` 的 Request.Validate | 校验请求参数，并把清洗结果写回字段 |
 | 用例 | `internal/service` | 业务逻辑：取数、转换成模型、组装响应 |
 | 数据 | `internal/repository` → dbs | 执行 SQL，错误原样返回 |
-| 响应 | `internal/transport/http/jsoncodec` | 统一响应体 `{code, message, data}` |
+| 响应 | `internal/transport/http/jsoncodec` | 输出统一响应；成功时 `code`、`message` 为空，`data` 按 `omitempty` 规则输出；失败时输出错误 `code`、`message`，不输出 `data` |
 
 每一层只做自己的事：Handler 不写业务逻辑，Service 不处理 HTTP 细节，Domain 不依赖具体实现包。
 

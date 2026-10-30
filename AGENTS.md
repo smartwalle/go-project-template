@@ -39,17 +39,19 @@ internal/transport/http/   HTTP 适配层：handler、jsoncodec、中间件
 - `service`：实现领域包中定义的 Service 契约，负责业务用例。
 - `transport`：负责外部入口与协议适配，例如 HTTP、消息消费、定时任务等。根据实际需求组织，不要求每个业务用例都必须提供 HTTP 接口。
 
-### 依赖方向
+### 依赖关系
 
-- `domain` 不依赖 `transport`、`service`、`repository` 等实现层，也不依赖具体数据库驱动。
-- `service` 依赖 `domain` 中定义的业务契约和数据访问契约，不依赖 `repository` 的具体实现。
-- `repository` 依赖 `domain` 中定义的实体和 Repository 契约，不依赖 `service`。
+各层的依赖关系按职责确定：
+
+- `domain` 定义业务类型和契约，不依赖 `transport`、`service`、`repository` 等实现层，也不依赖具体数据库驱动。
+- `service` 实现 `domain` 中定义的 Service 契约，并通过 `domain` 中定义的 Repository 契约访问数据；不依赖 `repository` 的具体实现。
+- `repository` 实现 `domain` 中定义的 Repository 契约，依赖领域实体和数据访问契约，不依赖 `service`。
 - `transport` 调用 `service` 提供的业务用例，不直接访问数据库或实现业务规则。
-- `foundation` 不依赖具体业务领域，可以被需要相关通用能力的层按需依赖。
-- `app` 负责组装各层实现，不承担业务逻辑。
-- 各层之间通过接口隔离具体实现：接口定义在 `domain`，实现分别放在 `service`、`repository` 等对应实现层。
-- 不需要某项基础能力的包，不应为了遵循分层形式而引入对应依赖。
+- `foundation` 提供跨业务通用技术能力，不依赖具体业务领域；需要相关能力的层按需依赖，不要求所有层都引入 Foundation。
+- `app` 负责创建各层实现，将 Repository 注入 Service，再将 Service 注入对应的 Transport，并管理应用生命周期。
 - 全局共享资源（配置、数据库连接等）由 `app.Environment` 管理：`Prepare` 创建和初始化，`Clear` 释放资源。
+
+接口定义与实现的归属必须保持清晰：业务契约定义在 `domain`，Service 和 Repository 分别在各自实现层完成；具体实现之间的依赖组装由 `app` 负责。
 
 ## 命名约定
 
@@ -96,10 +98,12 @@ internal/transport/http/   HTTP 适配层：handler、jsoncodec、中间件
 ### 请求参数校验
 
 - 每个 Request 必须实现 `Validate() error`。
-- `Validate` 负责 nil 判断、参数校验和数据归一化。
+- `Validate` 负责 nil 判断、请求参数自身的必填项、格式、取值范围校验，以及必要的数据归一化。
 - 数据归一化是指对请求数据进行必要清洗，并将清洗结果写回字段。
+- `Validate` 只负责请求数据自身的校验，不负责查询数据库、检查资源是否存在、检查唯一性等依赖外部状态的业务校验。
 - Service 用例的入口处首先调用 `req.Validate()`，校验失败直接返回错误。
 - 校验通过后，Service 直接使用归一化后的请求字段，不重复执行相同校验。
+- 资源是否存在、业务状态是否允许、数据是否冲突等业务校验由 Service 根据业务流程完成。
 - 不需要请求参数的用例，不必为了形式创建空 Request。
 
 ### 上下文数据
@@ -113,13 +117,14 @@ internal/transport/http/   HTTP 适配层：handler、jsoncodec、中间件
 
 - 每份数据使用私有空结构体作为 context key，避免与其他包的 key 冲突。
 - 写入方法使用 `WithXxx` 命名，读取方法使用 `XxxFrom` 命名。
-- 读取不到时返回零值，不返回错误。
+- 读取不到时返回对应类型的零值，不返回错误。
 - 不要直接使用字符串等基础类型作为 context key。
+- 当前请求 ID 使用 `string` 类型。
 
 ### 错误处理
 
 - 数据访问（Repository）返回的错误原样透传，不随意包装或转换。
-- 用例自己产生的通用错误使用 `internal/foundation/errors` 中定义的错误，例如 `NotFound`、`AlreadyExists`、`InvalidArgument`、`MissingArgument` 等。
+- 用例自己产生的跨业务通用错误使用 `internal/foundation/errors` 中定义的错误，例如 `NotFound`、`AlreadyExists`、`InvalidArgument`、`MissingArgument` 等。
 - 业务专属的错误语义在对应领域包中定义，使用带业务前缀的错误 code，例如 `user_not_found`。
 - 判断错误语义按 code 比较，不按错误值比较。错误 message 可以随业务变化，调用方应通过错误类型提供的 `Code()` 获取 code 后判断。
 - 不要为了包装错误而重复包装；需要增加上下文时，应确保不会改变调用方判断错误语义的方式。
@@ -145,8 +150,8 @@ internal/transport/http/   HTTP 适配层：handler、jsoncodec、中间件
 
 ```go
 err := repo.Transaction(ctx, func(txCtx context.Context) error {
-// 使用 txCtx 执行事务内的数据库操作。
-return nil
+    // 使用 txCtx 执行事务内的数据库操作。
+    return nil
 }, nil)
 ```
 
@@ -249,7 +254,7 @@ return nil
 | 领域模块的文件划分 | `internal/domain/<模块>/doc.go` |
 | Entity、Model、Request、Response 的定义与用法 | `internal/domain/<模块>/` 对应文件 |
 | 分页参数与分页计算 | `internal/foundation/pagination` |
-| 通用业务错误与错误码 | `internal/foundation/errors` |
+| 通用错误与错误码 | `internal/foundation/errors` |
 | 日志约定 | `internal/foundation/logging` |
 | 通用上下文数据 | `internal/foundation/metadata` |
 | 业务上下文数据 | `internal/domain/metadata` |
