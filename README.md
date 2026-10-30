@@ -65,11 +65,3 @@ internal/transport/http/   HTTP 适配层
 | [cmd/README.md](cmd/README.md) | 进程入口 |
 
 细则写在对应代码的注释里，README 给出骨架，AGENTS.md 列出规则。
-
-## 校验
-
-```bash
-gofmt -l .
-go build ./...
-go vet ./...
-```
