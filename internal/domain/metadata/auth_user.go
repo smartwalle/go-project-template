@@ -23,11 +23,11 @@ func WithAuthUser(ctx context.Context, user authdomain.AuthUser) context.Context
 	return context.WithValue(ctx, authUserKey{}, user)
 }
 
-// AuthUser 从 Context 中取出当前登录用户信息。
+// AuthUserFrom 从 Context 中取出当前登录用户信息。
 //
 // 供业务代码读取登录用户；Context 中没有用户信息
-// （例如接口没有经过鉴权中间件）时返回 AuthUser 的零值。
-func AuthUser(ctx context.Context) authdomain.AuthUser {
+// （例如接口没有经过鉴权中间件）时返回 AuthUserFrom 的零值。
+func AuthUserFrom(ctx context.Context) authdomain.AuthUser {
 	user, _ := ctx.Value(authUserKey{}).(authdomain.AuthUser)
 	return user
 }

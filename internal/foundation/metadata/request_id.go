@@ -14,10 +14,10 @@ func WithRequestId(ctx context.Context, rid string) context.Context {
 	return context.WithValue(ctx, requestIdKey{}, rid)
 }
 
-// RequestId 从 Context 中取出请求 id。
+// RequestIdFrom 从 Context 中取出请求 id。
 //
 // Context 中没有请求 id 时返回空字符串。
-func RequestId(ctx context.Context) string {
+func RequestIdFrom(ctx context.Context) string {
 	var rid, _ = ctx.Value(requestIdKey{}).(string)
 	return rid
 }
