@@ -144,7 +144,7 @@ type ListResponse struct {
 	Total int `json:"total"`
 
 	// UserList 是用户列表。
-	UserList []*User `json:"users"`
+	UserList []*User `json:"user_list"`
 }
 
 // Service 是用户模块的业务契约，每个方法对应一个业务用例。
@@ -174,10 +174,10 @@ type Service interface {
 	Get(ctx context.Context, req *GetRequest) (*User, error)
 
 	// Create 创建用户。
-	// 邮箱已存在时返回 ErrAlreadyExists。
+	// 邮箱已存在时返回 AlreadyExists 错误。
 	Create(ctx context.Context, req *CreateRequest) (*User, error)
 
 	// Update 更新用户信息。
-	// 用户不存在时返回 ErrNotFound，邮箱已被占用时返回 ErrAlreadyExists。
+	// 用户不存在时返回 ErrNotFound，邮箱已被占用时返回 AlreadyExists 错误。
 	Update(ctx context.Context, req *UpdateRequest) (*User, error)
 }
