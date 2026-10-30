@@ -143,8 +143,8 @@ type ListResponse struct {
 	// Total 是符合查询条件的用户总数。
 	Total int `json:"total"`
 
-	// Users 是用户列表。
-	Users []*User `json:"users"`
+	// UserList 是用户列表。
+	UserList []*User `json:"users"`
 }
 
 // Service 是用户模块的业务契约，每个方法对应一个业务用例。
