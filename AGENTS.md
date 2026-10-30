@@ -4,6 +4,13 @@
 本文件是本仓库的编码规范，供 AI Coding Agent 和新同事直接照着执行。
 这里定规则，各目录的 README 给骨架与用法，细则写在对应代码的注释里。
 
+## 项目初始化
+
+当用户要求基于本模板创建新项目、初始化项目结构或将模板转换为具体项目时，
+必须先阅读根目录的 `PROJECT.md`，并遵循其中的初始化流程。
+
+`PROJECT.md` 仅负责模板初始化，不替代本文档中的日常开发约定。
+
 ## 项目是什么
 
 Go 后端服务模板：分层清晰、约定统一，业务模块自带一套完整示例。
@@ -125,7 +132,6 @@ transport/http  →  service  →  domain
 1. 领域包加 Request（实现 Validate）；要带额外信息就加 Response，否则直接返回模型
 2. `internal/service` 实现用例：第一行 `req.Validate()`，然后取数、转换成模型、返回
 3. `internal/transport/http/handler` 加方法，并在 `RegisterRoutes` 里注册路由
-4. 验证：`gofmt -l .`、`go build ./...`、`go vet ./...`
 
 ## 新增一个业务模块
 

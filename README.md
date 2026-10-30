@@ -54,6 +54,7 @@ internal/transport/http/   HTTP 适配层
 | 文档 | 内容 |
 | --- | --- |
 | [AGENTS.md](AGENTS.md) | 编码规范：分层、命名、行为约定、HTTP 接口约定、改动清单 |
+| [PROJECT.md](PROJECT.md) | 项目初始化：如何基于模板创建具体项目 |
 | [internal/domain/README.md](internal/domain/README.md) | 领域契约的六种类型与写法 |
 | [internal/service/README.md](internal/service/README.md) | 业务用例的写法、查询放法、事务 |
 | [internal/repository/README.md](internal/repository/README.md) | 数据访问实现 |
