@@ -52,7 +52,7 @@ func (r *CreateRequest) Validate() error {
 // GetRequest 是获取用户用例的请求参数。
 type GetRequest struct {
 	// Id 是用户标识。
-	Id int64 `json:"id"`
+	Id uint64 `json:"id"`
 }
 
 // Validate 校验请求参数。
@@ -101,7 +101,7 @@ func (r *ListRequest) Validate() error {
 // UpdateRequest 是更新用户用例的请求参数。
 type UpdateRequest struct {
 	// Id 是用户标识。
-	Id int64 `json:"id"`
+	Id uint64 `json:"id"`
 
 	// Name 是用户名称。
 	Name string `json:"name"`

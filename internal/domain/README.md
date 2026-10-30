@@ -1,3 +1,4 @@
+
 # internal/domain
 
 领域契约：业务领域的接口和结构体定义在这里，不写实现。
@@ -5,16 +6,21 @@
 **本文是这一层的规范表述**：下面的代码是标准写法，`internal/domain/userdomain` 是它的可运行实例。
 两边不一致时以本文为准，并同步更新实例。
 
-一个业务领域一个包（`internal/domain/<模块>/`），包内按角色分文件：
+一个业务领域一个包（`internal/domain/<模块>/`），包内按角色分文件。
+文件根据领域实际需要创建，不要求每个领域包都包含下表中的全部文件。
 
 | 文件 | 放什么 |
 | --- | --- |
-| `doc.go` | 包注释，说明这个领域的文件划分 |
+| `doc.go` | 包注释，说明这个领域的职责与文件划分 |
 | `entity.go` | 表结构映射，一个表一个 XXXEntity |
 | `model.go` | 整理、组合数据的结构体 |
 | `service.go` | Service 契约（用例接口），以及请求、响应结构 |
 | `repository.go` | Repository 契约（数据访问接口） |
 | `errors.go` | 领域专属错误 |
+
+如果一个领域只需要定义公共领域类型，不涉及数据访问或业务用例，可以只创建 `doc.go`、`model.go` 等实际需要的文件，不必为了目录形式创建空文件或无意义接口。
+
+例如，`authdomain` 用于定义认证相关的领域类型，当前登录用户信息 `AuthUser` 定义在该包中；它不需要为了符合其他业务领域的结构而额外创建 Service 或 Repository。
 
 依赖方向：domain 不 import transport、service、repository，也不 import 数据库驱动；
 仓储契约基于 dbs 的通用 Repository。
@@ -58,3 +64,4 @@ const (
 	// DeleteStatusDeleted 表示数据已被逻辑删除。
 	DeleteStatusDeleted DeleteStatus = 1
 )
+```

@@ -1,3 +1,4 @@
+
 # AGENTS.md
 
 本文件是本仓库的编码规范，供 AI Coding Agent 和新同事直接照着执行。
@@ -9,7 +10,7 @@ Go 后端服务模板：分层清晰、约定统一，业务模块自带一套�
 
 ## 目录与分层
 
-```
+```text
 cmd/                       进程入口：加载配置、准备环境、启动服务
 internal/app/              依赖组装与生命周期
 internal/config/           配置加载与校验
@@ -22,7 +23,7 @@ internal/transport/http/   HTTP 适配层：handler、jsoncodec、中间件
 
 依赖方向，只能从上往下：
 
-```
+```text
 transport/http  →  service  →  domain
                       ↘        ↙
                      foundation（被所有层依赖）
@@ -49,8 +50,9 @@ transport/http  →  service  →  domain
 
 标识符（id）：
 
-- 类型统一用 `uint64`
-- 有效性判断统一用 `> 0` / `<= 0`，不要用 `== 0`：类型改成有符号整型时，负数也要挡住
+- Entity、Model 中的标识符类型统一使用 `uint64`
+- Request 中接收的标识符可以使用 `int64`，以便校验负数
+- 有效性判断统一用 `> 0` / `<= 0`，不要只用 `== 0`：类型改成有符号整型时，负数也要挡住
 
 ## 行为约定
 
@@ -75,7 +77,7 @@ transport/http  →  service  →  domain
 
 **查询**
 
-- 查询放法：会被复用的查询进仓储契约，一次性的在 service 里用 `SelectBuilder` 拼
+- 查询方法：会被复用的查询进仓储契约，一次性的在 service 里用 `SelectBuilder` 拼
 - 条件一律用占位符传参，不要把用户输入拼进 SQL
 - 存在性判断：查不到（nil）或主键 `<= 0`，都算没有这条记录
 
@@ -97,13 +99,14 @@ transport/http  →  service  →  domain
 
 ## HTTP 接口约定
 
-- 全部用 POST，参数一律放在 JSON 请求体
+- 业务接口统一使用 POST，参数一律放在 JSON 请求体
+- 健康检查等基础设施接口可以根据接口语义使用合适的 HTTP 方法
 - 路径 = 资源 + 用例名，用例名与 Service 的方法名一致
-  - 列表 `POST /users/list`
-  - 创建 `POST /users/create`
-  - 查询 `POST /users/info`
-  - 更新 `POST /users/update`
-- 请求体必须存在，空请求体按参数不合法处理
+    - 列表 `POST /users/list`
+    - 创建 `POST /users/create`
+    - 查询 `POST /users/info`
+    - 更新 `POST /users/update`
+- 业务接口请求体必须存在，空请求体按参数不合法处理
 - handler 方法签名统一：`func (h *XxxHandler) Yyy(c *rx.Context, req *<模块>.XxxRequest) (*<模块>.Xxx, error)`
 - handler 只做协议适配：绑定请求、调用用例、返回结果；业务逻辑一律在 service
 - 业务错误的响应由 jsoncodec 统一输出，handler 不自己写状态码
@@ -114,7 +117,7 @@ transport/http  →  service  →  domain
 ## 日志
 
 - 消息（msg）用中文，字段名（key）保持英文
-- 错误文案原样透传，不翻译
+- 错误文案原样透传
 - 请求 id 通过 metadata 包在 context 里传递，日志里由 logkit 自动注入
 
 ## 新增一个用例
@@ -126,7 +129,7 @@ transport/http  →  service  →  domain
 
 ## 新增一个业务模块
 
-1. 新建 `internal/domain/<模块>/`，按 entity.go、model.go、service.go、repository.go、errors.go 划分
+1. 新建 `internal/domain/<模块>/`，按需创建 entity.go、model.go、service.go、repository.go、errors.go 等文件
 2. `internal/repository`、`internal/service` 各加一个文件
 3. `internal/transport/http/handler` 加一个文件
 4. 在 `internal/app/application.go` 里组装仓储与服务，在 `internal/transport/http/server.go` 里注册 Handler
