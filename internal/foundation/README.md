@@ -55,7 +55,7 @@ func (r *ListRequest) Validate() error {
 
 ```go
 ctx = metadata.WithRequestId(ctx, rid)
-rid := metadata.RequestId(ctx)
+rid := metadata.RequestIdFrom(ctx)
 ```
 
 请求 id 由 HTTP 中间件写入，日志里由 logkit 自动注入，不用业务代码自己拼。

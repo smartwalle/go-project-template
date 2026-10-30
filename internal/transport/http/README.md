@@ -11,7 +11,7 @@ HTTP 适配层：创建 Engine、组装路由、配置中间件，负责请求�
 
 ## 接口约定
 
-- 全部用 POST，参数放在 JSON 请求体
+- 业务接口统一使用 POST；健康检查等基础设施接口按语义选择 HTTP 方法，参数放在 JSON 请求体
 - 路径 = 资源 + 用例名，用例名与 Service 的方法名一致
   - 列表 `POST /users/list`
   - 创建 `POST /users/create`
